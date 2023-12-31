@@ -162,7 +162,7 @@ for a, ms in RnAr_mapping.items():
         key = (m[0], "Y") if "Y" in m else (m[0], m[2])
         #rev_RnAr_mapping.setdefault(key, set()).add(a)
         rev_RnAr_mapping[key] = a
-pprint(rev_RnAr_mapping)
+#pprint(rev_RnAr_mapping)
 
 non_RnAr_mapping = {
     a: [m for m in ms if "Rn" not in m]
@@ -239,13 +239,28 @@ for a0, ats in left_rim_mapping.items():
 #    'Ti': {'Ti', 'P', 'O'}}
 
 
+F_Mg_left_ends = {}
+for a0 in "F", "Mg":
+    visited, paths = {a0}, [a0]
+    while paths:
+        a = paths.pop()
+        for m in mapping[a]:
+            if m[0] not in visited:
+                visited.add(m[0])
+                paths.append(m[0])
+    F_Mg_left_ends[a0] = visited
+
+pprint(F_Mg_left_ends)
+
+
+
 rimRnAr_origins = {}
 for a0, ats in left_rim_origins.items():
     for a1 in ats:
         for switch in "F", "Mg", "Y":
             if (value := rev_RnAr_mapping.get((a1, switch))) is not None:
                 rimRnAr_origins.setdefault((a0, switch), set()).add(value)
-pprint(rimRnAr_origins)
+#pprint(rimRnAr_origins)
 
 
 def first_RnAr_group(molecule):
@@ -314,3 +329,19 @@ def part_2():
 #solution = part_2()
 #assert solution == (3 if not EXAMPLE else )
 #print(solution)
+
+
+def first_RnAr_groups(molecule):
+    groups = []
+    level, path = 0, []
+    for i, atom in enumerate(molecule):
+        if atom == "Rn":
+            if level == 0:
+                i0 = i
+            level += 1
+        elif atom == "Ar":
+            level -= 1
+            if level == 0:
+                groups.append((i0, i))
+
+    return tuple(groups)
