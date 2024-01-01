@@ -238,20 +238,20 @@ for a0, ats in left_rim_mapping.items():
 #    'Th': {'Th'},
 #    'Ti': {'Ti', 'P', 'O'}}
 
-
 F_Mg_left_ends = {}
 for a0 in "F", "Mg":
     visited, paths = {a0}, [a0]
     while paths:
-        a = paths.pop()
-        for m in mapping[a]:
-            if m[0] not in visited:
-                visited.add(m[0])
-                paths.append(m[0])
+        a1 = paths.pop()
+        for m in mapping[a1]:
+            a2 = m[0]
+            if a2 not in visited:
+                visited.add(a2)
+                paths.append(a2)
     F_Mg_left_ends[a0] = visited
 
-pprint(F_Mg_left_ends)
-
+#  {'F':  {'P', 'Si', 'F', 'Ca'},
+#   'Mg': {'B', 'Mg', 'Ti'}}
 
 
 rimRnAr_origins = {}
@@ -345,3 +345,7 @@ def first_RnAr_groups(molecule):
                 groups.append((i0, i))
 
     return tuple(groups)
+
+
+for i0, i1 in first_RnAr_groups(medicine):
+    print(medicine[i0-1:i1+1])
