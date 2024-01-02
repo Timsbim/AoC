@@ -118,10 +118,8 @@ solution = part_2()
 print(solution)
 
 
-
-
-"""
 def part_1(NUMBER):
+    maximum, max_n = float("-inf"), 0
     primes = [2, 3]
     for n in range(4, NUMBER + 1):
         m = n
@@ -139,7 +137,16 @@ def part_1(NUMBER):
         if m > 1:
             primes.append(n)
             factors[m] = 1
-        if num_presents(tuple(factors.items())) * 10 >= NUMBER:
-            return n
+        num = num_presents(factors)
+        if num > maximum:
+            print(f"{n:_}", f"{num:_}", f"{n - max_n:_}", f"{num - maximum:_}")
+            maximum, max_n = num, n
+        #if num_presents(tuple(factors.items())) * 10 >= NUMBER:
+        #    return n
 
-"""
+
+part_1(1_000_000)
+
+# 526_680 2_246_400 2_520 18_720
+# 540_540 2_257_920 13_860 11_520
+# 554_400 2_437_344 13_860 179_424
