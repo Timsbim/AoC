@@ -63,7 +63,7 @@ content += dedent(f"""\
     with open(file_name, "r") as file:
         pass
     if EXAMPLE:
-        pprint()
+        #pprint()
 
     # --------------------------------------------------------------------------- #
     #    Helper                                                                   #
@@ -82,8 +82,7 @@ content += dedent(f"""\
 
 
     solution = part_1()
-    #if not EXAMPLE:
-    #    assert solution == 
+    # assert solution == (if EXAMPLE else)
     print(solution)
 
     # --------------------------------------------------------------------------- #
@@ -97,8 +96,7 @@ content += dedent(f"""\
 
 
     solution = part_2()
-    #if not EXAMPLE:
-    #    assert solution == 
+    # assert solution == (if EXAMPLE else)
     print(solution)
     """)
 path.write_text(content)

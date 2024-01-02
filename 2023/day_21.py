@@ -273,6 +273,45 @@ def part_2(steps):
     return count
 
     
-solution = part_2(5_000 if EXAMPLE else 26_501_365)
-assert solution == (16733044 if EXAMPLE else 630661863455116)
-print(solution)
+#solution = part_2(5_000 if EXAMPLE else 26_501_365)
+#assert solution == (16733044 if EXAMPLE else 630661863455116)
+#print(solution)
+
+with open(file_name) as file:
+    data = file.read().strip().splitlines()
+
+n = len(data)
+non_rocks = {
+    (i, j)
+    for i, j in product(range(n), repeat=2)
+    if data[i][j] in ".S"
+}
+S = n // 2, n // 2
+
+
+def neighbours(p):
+    p0, p1 = p
+    for d0, d1 in (1, 0), (-1, 0), (0, 1), (0, -1):
+        yield p0 + d0, p1 + d1
+
+
+def not_rock(p):
+    return (p[0] % n, p[1] % n) in non_rocks
+
+
+k, r  = divmod(26_501_365, n)
+last, new, on = {S}, {S}, {0: 1}
+for step in range(1, r + 2 * n + 1):
+    last, new = new, {
+        p1
+        for p0 in new
+        for p1 in neighbours(p0)
+        if p1 not in last and not_rock(p1)
+    }
+    on[step] = len(new) + (on[step - 2] if step > 1 else 0)
+
+d1 = on[r + 2 * n] - on[r + n]
+d2 = on[r + 2 * n] - 2 * on[r + n] + on[r]
+solution = on[r + 2 * n] + (k - 2) * (2 * d1 + (k - 1) * d2) // 2
+
+print(f"Part 2: {solution}")
