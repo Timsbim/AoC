@@ -145,8 +145,53 @@ def part_1(NUMBER):
         #    return n
 
 
-part_1(1_000_000)
+#part_1(1_000_000) =>  Solution: 831_600 
 
-# 526_680 2_246_400 2_520 18_720
-# 540_540 2_257_920 13_860 11_520
-# 554_400 2_437_344 13_860 179_424
+nr = 831600
+print(sum(n for n in range(1, nr + 1) if nr % n == 0))
+
+def part_2():
+    for nr in range(51, NUMBER):
+        presents = sum(n for n in range(nr - 49, nr + 1) if nr % n == 0) * 11
+        if presents >= NUMBER:
+            return nr
+
+#print(part_2())
+
+from collections import Counter
+
+def factorization(n):
+    factors = Counter()
+    p = 2
+    while n > 1:
+        d, r = divmod(n, p)
+        if r == 0:
+            factors[p] += 1
+            n = d
+        else:
+            p += 1
+
+    return factors
+
+
+factors = factorization(nr)
+pprint(factors)
+assert nr == prod(p ** k for p, k in factors.items())
+
+
+def part_2():
+    maxi = float("-inf")
+    for nr in range(1, NUMBER):
+        presents = sum(
+            n
+            for n in range(max(1, nr // 50), nr + 1)
+            if nr % n == 0
+        )
+        if maxi < presents:
+            print(f"{nr:_}, {presents:_}")
+            maxi = presents
+        if presents * 11 >= NUMBER:
+            return nr
+
+
+print(part_2())
