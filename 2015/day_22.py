@@ -82,6 +82,30 @@ def effects(state):
     return hp_boss, hp_player, mana, tuple(new_cooldowns)
 
 
+class Fight:
+
+    def __init__(self, hp_boss, hp, costs, armor, mana, cooldowns=None):
+        self.hp_boss = hp_boss
+        self.hp = hp,
+        self.costs = costs
+        self.mana = mana
+        if cooldowns is None:
+            self.cooldowns = dict.fromkeys(SPELLS[2:], 0)
+        else:
+            self.cooldowns = dict(zip(SPELLS[2:], cooldowns))
+
+    def take_effect(self):
+        for spell, cooldown in self.cooldowns.itmes():
+            if cooldown > 0:
+                if spell == "Shield":
+                    self.armor = 7
+                elif spell == "Poison":
+                    self.hp_boss -= 3
+                elif spell == "Recharge":
+                    self.mana += 101
+                self.cooldowns[spell] -= 1
+        
+
 def fights():
     minimum = float("inf")
     
