@@ -60,10 +60,9 @@ def floor(brick):
 
 
 def build_support():
-    settled = []
     supported = defaultdict(set)
-    planes, block_to_brick = defaultdict(set), {}
-
+    
+    settled, planes, block_to_brick = [], defaultdict(set), {}
     def key(brick):
         return brick[0][2]
 

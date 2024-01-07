@@ -13,28 +13,22 @@ EXAMPLE = True
 # --------------------------------------------------------------------------- #
 print("Day", DAY)
 
-file_name = f"2015/day_{DAY:0>2}_input"
-if EXAMPLE:
-    file_name += "_example"
-file_name += ".txt"
-
 # --------------------------------------------------------------------------- #
 #    Reading input                                                            #
 # --------------------------------------------------------------------------- #
 
-with open(file_name, "r") as file:
-    BOSS = {}
-    for line in file:
-        stat, value = line.split(": ")
-        BOSS[stat] = int(value)
-    
+BOSS = (
+    {"Hit Points": 14, "Damage": 8}
+    if EXAMPLE else
+    {"Hit Points": 58, "Damage": 9}
+)   
 PLAYER = (
     {"Hit Points": 14, "Mana": 250}
     if EXAMPLE else
     {"Hit Points": 50, "Mana": 500}
 )
 
-print(f"Boss: {BOSS}; Player: {PLAYER}")
+print(f"Player: {PLAYER}; Boss: {BOSS}\n")
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
@@ -46,8 +40,6 @@ Spell = namedtuple(
     defaults=(0, 0, 0, 0, 0)
 )
 
-spell = Spell(10)
-
 SPELLS = {
     "Missile":  Spell(53, Damage=4),
     "Drain":    Spell(73, Damage=2, Heal=2),
@@ -56,6 +48,64 @@ SPELLS = {
     "Recharge": Spell(229, Cooldown=5, Mana=101)
 }
 pprint(SPELLS, sort_dicts=False)
+
+SPELLS = (
+    Spell(53, Damage=4),
+    Spell(73, Damage=2, Heal=2),
+    Spell(113, Cooldown=6, Armor=7),
+    Spell(173, Cooldown=6, Damage=3),
+    Spell(229, Cooldown=5, Mana=101)
+)
+pprint(SPELLS)
+cooldowns = {spell: spell.Cooldown for spell in SPELLS}
+pprint(cooldowns)
+
+
+SPELLS = tuple("Missile Drain Shield Poison Recharge".split())
+COSTS = (53, 73, 113, 173, 229)
+
+
+def effects(state):
+    hp_boss, hp_player, mana, cooldowns = state
+
+    new_cooldowns = []
+    for spell, cooldown in zip(SPELLS[2:], cooldowns):
+        new_cooldowns.append(cooldown - 1 if cooldown > 0 else 0)
+        if cooldown > 0:
+            if spell == "Shield":
+                armor = 7
+            elif spell == "Poison":
+                hp_boss -= 3
+            elif spell == "Recharge":
+                mana += 101
+    
+    return hp_boss, hp_player, mana, tuple(new_cooldowns)
+
+
+def fights():
+    minimum = float("inf")
+    
+    hp_boss, damage = BOSS["Hit Points"], BOSS["Damage"]
+    hp_player, mana = PLAYER["Hit Points"], PLAYER["Mana"]
+    paths = [(0, hp_boss, hp_player, mana, (0, 0, 0))]
+    while paths:
+        path = paths.pop()
+        costs, state = path[0], path[1:]
+        
+        # Players turn
+        hp_boss, hp_player, mana, cooldowns = effects(state)
+        if hp_boss <= 0:
+            minimum = min(minimum, costs)
+            continue
+        if mana < 53:
+            continue
+
+        for spell, cost in zip(SPELLS, COSTS):
+            if cost <= mana:
+                
+        
+        # Bosses turn
+        hp_player -= max(1, armor - damage)
 
 # --------------------------------------------------------------------------- #
 #    Part 1                                                                   #

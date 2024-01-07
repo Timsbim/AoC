@@ -289,24 +289,23 @@ non_rocks = {
 S = n // 2, n // 2
 
 
-def neighbours(p):
-    p0, p1 = p
-    for d0, d1 in (1, 0), (-1, 0), (0, 1), (0, -1):
-        yield p0 + d0, p1 + d1
+def neighbours(y, x):
+    for dy, dx in (0, 1), (1, 0), (0, -1), (-1, 0):
+        yield y + dy, x + dx
 
 
-def not_rock(p):
-    return (p[0] % n, p[1] % n) in non_rocks
+def not_rock(y, x):
+    return (y % n, x % n) in non_rocks
 
 
 k, r  = divmod(26_501_365, n)
 last, new, on = {S}, {S}, {0: 1}
 for step in range(1, r + 2 * n + 1):
     last, new = new, {
-        p1
-        for p0 in new
-        for p1 in neighbours(p0)
-        if p1 not in last and not_rock(p1)
+        (y1, x1)
+        for y0, x0 in new
+        for y1, x1 in neighbours(y0, x0)
+        if (y1, x1) not in last and not_rock(y1, x1)
     }
     on[step] = len(new) + (on[step - 2] if step > 1 else 0)
 
@@ -314,4 +313,4 @@ d1 = on[r + 2 * n] - on[r + n]
 d2 = on[r + 2 * n] - 2 * on[r + n] + on[r]
 solution = on[r + 2 * n] + (k - 2) * (2 * d1 + (k - 1) * d2) // 2
 
-print(f"Part 2: {solution}")
+print(solution)
