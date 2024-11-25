@@ -95,7 +95,6 @@ def get_steps(start):
     return steps
 
 
-
 """
 for start in 4, 8:
     steps = get_steps(start)
@@ -108,7 +107,6 @@ steps = get_steps(8)
 for n, step in enumerate(steps, 1):
     non_wins = sum(n for s, n in step.items() if s < 21)
     print(f"Step {n}: {step[21]}, {non_wins}")
-
 """
 
 
