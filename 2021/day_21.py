@@ -2,7 +2,7 @@
 #    Day 21                                                                   #
 # --------------------------------------------------------------------------- #
 from collections import Counter, defaultdict
-from itertools import cycle, islice
+from itertools import cycle
 from pprint import pprint
 
 
@@ -32,20 +32,21 @@ print("Input:", start_1, start_2)
 #    Helper functions                                                         #
 # --------------------------------------------------------------------------- #
 
-def next_position(current, roll):
-    new = (current + roll) % 10
-    return new if new > 0 else 10
+
+def next_position(position, score):
+    return (position + score) % 10 or 10
+
 
 # --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
-
+ 
 
 def deterministic_rolls():
     dice = cycle(range(1, 101))
     while True:
-        yield sum(islice(dice, 3)) 
+        yield next(dice) + next(dice) + next(dice)
 
 
 def part_1(start_1, start_2):
@@ -53,7 +54,7 @@ def part_1(start_1, start_2):
     position, score, counter = [start_1, start_2], [0, 0], 0
     while True:
         for i in range(2):
-            position[i] = next_position(position[i], next(die))
+            position[i] = (position[i] + next(die)) % 10 or 10
             counter += 3
             score[i] += position[i]
             if score[i] >= 1000:
@@ -69,6 +70,9 @@ print(solution)
 #    Part 2                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 2: ", end="\n\n")
+
+DIST = {3: 1, 4: 3, 5: 6, 6: 7, 7: 6, 8: 3, 9: 1}
+
 
 
 def get_steps(start):
@@ -90,6 +94,8 @@ def get_steps(start):
         last_step = step
     return steps
 
+
+
 """
 for start in 4, 8:
     steps = get_steps(start)
@@ -106,10 +112,7 @@ for n, step in enumerate(steps, 1):
 """
 
 
-# This approach doesn't actually split universes! It just follows all possible
-# paths in one universe. So what does the 'splitting of universes' actually
-# mean?
-
+"""
 step_max = 8
 step = wins_0 = wins_1 = 0
 paths = [((0, 4), (0, 8))]
@@ -138,3 +141,4 @@ while paths:
 print(f"\n1 wins: {wins_0}; 2 wins: {wins_1}\n")
 # 444356092776315
 # 341960390180808 
+"""

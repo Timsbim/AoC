@@ -65,8 +65,6 @@ EXAMPLE = True
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
 # --------------------------------------------------------------------------- #
-
-
 print("Day", DAY)
 
 file_name = f"day_{DAY:0>2}_input"
@@ -103,7 +101,7 @@ def part_1():
 
 
 solution = part_1()
-#assert solution == None
+#assert solution == (if EXAMPLE else)
 print(solution)
 
 # --------------------------------------------------------------------------- #
@@ -117,7 +115,7 @@ def part_2():
 
 
 solution = part_2()
-#assert solution == None
+#assert solution == (if EXAMPLE else)
 print(solution)
 
 ''')
