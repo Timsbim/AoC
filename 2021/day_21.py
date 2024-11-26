@@ -33,8 +33,8 @@ print("Input:", start_1, start_2)
 # --------------------------------------------------------------------------- #
 
 
-def next_position(position, score):
-    return (position + score) % 10 or 10
+def next_position(position, rolls):
+    return (position + rolls) % 10 or 10
 
 
 # --------------------------------------------------------------------------- #
@@ -72,42 +72,38 @@ print(solution)
 print("Part 2: ", end="\n\n")
 
 DIST = {3: 1, 4: 3, 5: 6, 6: 7, 7: 6, 8: 3, 9: 1}
+assert sum(DIST.values()) == 27
 
 
-
-def get_steps(start):
-    steps = []
-    last_step = {start: {0: 1}}
+def get_states(start):
+    turns, last_turn = [], {start: {0: 1}}
     while True:
-        step = defaultdict(Counter)
-        for start in last_step:
-            for roll in 1, 2, 3:
-                position = score = next_position(start, roll)
-                for score_old, num in last_step[start].items():
-                    if score_old < 21:
-                        if (score_new := score_old + score) > 21:
-                            score_new = 21
-                        step[position][score_new] += num
-        steps.append(sum(step.values(), Counter()))
-        if len(steps[-1]) == 1:
-            break
-        last_step = step
-    return steps
+        turn = defaultdict(Counter)
+        for start in last_turn:
+            for n, rolls in DIST.items():
+                position = score = next_position(start, rolls)
+                for score_old, num in last_turn[start].items():
+                    if score_old >= 21: continue
+                    if (score_new := score_old + score) > 21:
+                        score_new = 21
+                    turn[position][score_new] += num * n
+        turns.append(sum(turn.values(), Counter()))
+        if len(turns[-1]) == 1: break
+        last_turn = turn
+    states = []
+    last_finished = 0
+    for turn in turns:
+        states.append((turn[21] - last_finished, sum(turn.values()) - turn[21]))
+        last_finished = turn[21]
+    return states
+ 
 
-
-"""
-for start in 4, 8:
-    steps = get_steps(start)
-    print(f"Start: {start}")
-    for n, step in enumerate(steps, start=1):
-        print(f"Step {n}: ", end="")
-        print({s: step[s] for s in sorted(step)})
-
-steps = get_steps(8)
-for n, step in enumerate(steps, 1):
-    non_wins = sum(n for s, n in step.items() if s < 21)
-    print(f"Step {n}: {step[21]}, {non_wins}")
-"""
+for player in 1, 2:
+    start = start_1 if player == 1 else start_2
+    print(f"Player {player} (start in position {start}):")
+    for n, (finished, pending) in enumerate(get_states(start), start=1):
+        print(f"{n}: new wins = {finished}, pending = {pending}")
+    print("")
 
 
 """
