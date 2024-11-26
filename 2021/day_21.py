@@ -76,34 +76,40 @@ assert sum(DIST.values()) == 27
 
 
 def get_states(start):
-    turns, last_turn = [], {start: {0: 1}}
+    turns, turn_last = [], {start: {0: 1}}
     while True:
         turn = defaultdict(Counter)
-        for start in last_turn:
-            for n, rolls in DIST.items():
+        for start in turn_last:
+            for rolls, n in DIST.items():
                 position = score = next_position(start, rolls)
-                for score_old, num in last_turn[start].items():
+                for score_old, num in turn_last[start].items():
                     if score_old >= 21: continue
                     if (score_new := score_old + score) > 21:
                         score_new = 21
                     turn[position][score_new] += num * n
+        #pprint(turn)
         turns.append(sum(turn.values(), Counter()))
+        pprint(turns[-1])
         if len(turns[-1]) == 1: break
-        last_turn = turn
+        turn_last = turn
     states = []
     last_finished = 0
     for turn in turns:
         states.append((turn[21] - last_finished, sum(turn.values()) - turn[21]))
         last_finished = turn[21]
     return states
- 
 
+
+get_states(start_1)
+
+"""
 for player in 1, 2:
     start = start_1 if player == 1 else start_2
     print(f"Player {player} (start in position {start}):")
     for n, (finished, pending) in enumerate(get_states(start), start=1):
         print(f"{n}: new wins = {finished}, pending = {pending}")
     print("")
+"""
 
 
 """
