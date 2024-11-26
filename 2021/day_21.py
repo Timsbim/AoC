@@ -71,8 +71,8 @@ print(solution)
 # --------------------------------------------------------------------------- #
 print("Part 2: ", end="\n\n")
 
-DIST = {3: 1, 4: 3, 5: 6, 6: 7, 7: 6, 8: 3, 9: 1}
-assert sum(DIST.values()) == 27
+ROLLS = {3: 1, 4: 3, 5: 6, 6: 7, 7: 6, 8: 3, 9: 1}
+assert sum(ROLLS.values()) == 27
 
 
 def get_states(start):
@@ -80,13 +80,13 @@ def get_states(start):
     while True:
         turn = defaultdict(Counter)
         for start in turn_last:
-            for rolls, n in DIST.items():
-                position = score = next_position(start, rolls)
-                for score_old, num in turn_last[start].items():
-                    if score_old >= 21: continue
-                    if (score_new := score_old + score) > 21:
-                        score_new = 21
-                    turn[position][score_new] += num * n
+            for rolls, n in ROLLS.items():
+                position = (start + rolls) % 10 or 10
+                for score, m in turn_last[start].items():
+                    if score >= 21: continue
+                    if (score := score + position) > 21:
+                        score = 21
+                    turn[position][score] += n * m
         #pprint(turn)
         turns.append(sum(turn.values(), Counter()))
         pprint(turns[-1])
@@ -100,7 +100,29 @@ def get_states(start):
     return states
 
 
-get_states(start_1)
+def get_states(start):
+    states = []
+    turn_last = {start: {0: 1}}
+    while True:
+        turn = defaultdict(Counter)
+        for start in turn_last:
+            for rolls, n in ROLLS.items():
+                position = (start + rolls) % 10 or 10
+                for score, m in turn_last[start].items():
+                    if score >= 21: continue
+                    if (score := score + position) > 21:
+                        score = 21
+                    turn[position][score] += n * m
+        turn_last = turn
+        #pprint(turn)
+        scores = sum(turn.values(), Counter())
+        #pprint(scores)
+        states.append((scores[21], sum(scores.values()) - scores[21]))        
+        if len(scores) == 1: break
+    return states
+
+
+pprint(get_states(start_2))
 
 """
 for player in 1, 2:
