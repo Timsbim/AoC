@@ -3,11 +3,10 @@
 # --------------------------------------------------------------------------- #
 from collections import Counter, defaultdict
 from itertools import cycle
-from pprint import pprint
 
 
 DAY = 21
-EXAMPLE = True
+EXAMPLE = False
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
@@ -29,15 +28,6 @@ with open(file_name, "r") as file:
 print("Input:", start_1, start_2)
 
 # --------------------------------------------------------------------------- #
-#    Helper functions                                                         #
-# --------------------------------------------------------------------------- #
-
-
-def next_position(position, rolls):
-    return (position + rolls) % 10 or 10
-
-
-# --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
@@ -53,7 +43,7 @@ def part_1(start_1, start_2):
     die = deterministic_rolls()
     position, score, counter = [start_1, start_2], [0, 0], 0
     while True:
-        for i in range(2):
+        for i in 0, 1:
             position[i] = (position[i] + next(die)) % 10 or 10
             counter += 3
             score[i] += position[i]
@@ -69,38 +59,16 @@ print(solution)
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
 # --------------------------------------------------------------------------- #
-print("Part 2: ", end="\n\n")
+print("Part 2: ", end="")
 
+# Rolls distribution: 3 independent rolls with result 1, 2 or 3
 ROLLS = {3: 1, 4: 3, 5: 6, 6: 7, 7: 6, 8: 3, 9: 1}
-assert sum(ROLLS.values()) == 27
-
-
-def get_states(start):
-    turns, turn_last = [], {start: {0: 1}}
-    while True:
-        turn = defaultdict(Counter)
-        for start in turn_last:
-            for rolls, n in ROLLS.items():
-                position = (start + rolls) % 10 or 10
-                for score, m in turn_last[start].items():
-                    if score >= 21: continue
-                    if (score := score + position) > 21:
-                        score = 21
-                    turn[position][score] += n * m
-        #pprint(turn)
-        turns.append(sum(turn.values(), Counter()))
-        pprint(turns[-1])
-        if len(turns[-1]) == 1: break
-        turn_last = turn
-    states = []
-    last_finished = 0
-    for turn in turns:
-        states.append((turn[21] - last_finished, sum(turn.values()) - turn[21]))
-        last_finished = turn[21]
-    return states
-
+ 
 
 def get_states(start):
+    """Calculate the finishing leafs and pending branches over the
+    (simplified) turn tree
+    """
     states = []
     turn_last = {start: {0: 1}}
     while True:
@@ -109,58 +77,29 @@ def get_states(start):
             for rolls, n in ROLLS.items():
                 position = (start + rolls) % 10 or 10
                 for score, m in turn_last[start].items():
-                    if score >= 21: continue
-                    if (score := score + position) > 21:
-                        score = 21
-                    turn[position][score] += n * m
+                    if score < 21:
+                        turn[position][min(score + position, 21)] += n * m
         turn_last = turn
-        #pprint(turn)
         scores = sum(turn.values(), Counter())
-        #pprint(scores)
-        states.append((scores[21], sum(scores.values()) - scores[21]))        
-        if len(scores) == 1: break
-    return states
+        states.append((scores[21], sum(scores.values()) - scores[21]))
+        if len(scores) == 1:
+            return states
+ 
 
+def part_2(start_1, start_2):
+    """Use the finishing/pending states of the 2 players to count the wins:
+    Sum over # finishing branches x # pending branches of other player one
+    turn before.
+    """
+    pending_2 = wins_1 = wins_2 = 0
+    states = zip(get_states(start_1), get_states(start_2))
+    for (finishing_1, pending_1), (finishing_2, pending_2_new) in states:
+        wins_1 += finishing_1 * pending_2
+        wins_2 += finishing_2 * pending_1
+        pending_2 = pending_2_new
+    return max(wins_1, wins_2)
+ 
 
-pprint(get_states(start_2))
-
-"""
-for player in 1, 2:
-    start = start_1 if player == 1 else start_2
-    print(f"Player {player} (start in position {start}):")
-    for n, (finished, pending) in enumerate(get_states(start), start=1):
-        print(f"{n}: new wins = {finished}, pending = {pending}")
-    print("")
-"""
-
-
-"""
-step_max = 8
-step = wins_0 = wins_1 = 0
-paths = [((0, 4), (0, 8))]
-while paths:
-    step += 1
-    next_paths = []
-    for (s0, p0), (s1, p1) in paths:
-        for roll in 1, 2, 3:
-            if step % 2 == 1:  # Player 1's turn
-                p0_next = next_position(p0, roll)
-                s0_next = s0 + p0_next
-                if s0_next >= 21:
-                    wins_0 += 1
-                else:
-                    next_paths.append(((s0_next, p0_next), (s1, p1)))
-            else:  # Player 2's turn
-                p1_next = next_position(p1, roll)
-                s1_next = s1 + p1_next
-                if s1_next >= 21:
-                    wins_1 += 1
-                else:
-                    next_paths.append(((s0, p0), (s1_next, p1_next)))
-    paths = next_paths
-    print(f"Step {step}: {len(paths)} open paths")
-
-print(f"\n1 wins: {wins_0}; 2 wins: {wins_1}\n")
-# 444356092776315
-# 341960390180808 
-"""
+solution = part_2(start_1, start_2)
+print(solution)
+assert solution == (444356092776315 if EXAMPLE else 105619718613031)
