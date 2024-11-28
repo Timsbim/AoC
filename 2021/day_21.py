@@ -52,9 +52,8 @@ def part_1(start_1, start_2):
                 return score[i] * counter
 
 
-solution = part_1(start_1, start_2)
+print(solution := part_1(start_1, start_2))
 assert solution == (739785 if EXAMPLE else 513936)
-print(solution)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -100,6 +99,5 @@ def part_2(start_1, start_2):
     return max(wins_1, wins_2)
  
 
-solution = part_2(start_1, start_2)
-print(solution)
+print(solution := part_2(start_1, start_2))
 assert solution == (444356092776315 if EXAMPLE else 105619718613031)
