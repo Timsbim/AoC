@@ -100,9 +100,8 @@ def part_1():
     return None
 
 
-solution = part_1()
-#assert solution == (if EXAMPLE else)
-print(solution)
+print(solution := part_1())
+# assert solution == (if EXAMPLE else)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -114,9 +113,8 @@ def part_2():
     return None
 
 
-solution = part_2()
-#assert solution == (if EXAMPLE else)
-print(solution)
+print(solution := part_2())
+# assert solution == (if EXAMPLE else)
 
 ''')
 
