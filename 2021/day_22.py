@@ -138,4 +138,4 @@ def how_much_on(data):
 on = how_much_on(data) # 1319618626668022
 print(f"On: {on}!")
 with open("output.txt", "w") as file:
-    file.write(str(on)
+    file.write(str(on))

@@ -30,10 +30,10 @@ SPELLS_DELAYED = ("Shield", 113, 6), ("Poison", 173, 6), ("Recharge", 229, 5)
 
 def fights(hard=False):
     minimum = float("inf")
-   
-    paths = [(0, BOSS_HP, PLAYER_HP, MANA, 0, tuple())]
-    while paths:
-        turn, boss_hp, player_hp, mana, costs, spells = paths.pop()
+    
+    stack = [(0, BOSS_HP, PLAYER_HP, MANA, 0, tuple())]
+    while stack:  # DFS
+        turn, boss_hp, player_hp, mana, costs, spells = stack.pop()
        
         # Discontinue the branch if costs are too high
         if costs >= minimum:
@@ -75,7 +75,7 @@ def fights(hard=False):
                 if boss_hp_new <= 0:  # Adjust minimum if boss is dead
                     minimum = min(minimum, costs_new)
                 else:
-                    paths.append((
+                    stack.append((
                         turn, boss_hp_new, player_hp_new,
                         mana - cost, costs_new,
                         tuple(spells_new)
@@ -86,18 +86,18 @@ def fights(hard=False):
                 if cost > mana or costs_new >= minimum:  # Not enough mana or suboptimal
                     break
                 if spell not in spells_active:
-                    paths.append((
+                    stack.append((
                         turn, boss_hp, player_hp, mana - cost, costs_new,
                         tuple(spells_new + [(spell, cooldown)])
                     ))
-       
+
         else:  # Bosses turn
             # Damage
             player_hp -= max(1, DAMAGE - armor)
  
-            # Extend paths if player still alive
+            # Extend stack if player still alive
             if player_hp > 0:
-                paths.append((
+                stack.append((
                     turn, boss_hp, player_hp, mana, costs, tuple(spells_new)
                 ))
    
