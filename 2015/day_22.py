@@ -1,12 +1,11 @@
 # --------------------------------------------------------------------------- #
 #    Day 22                                                                   #
 # --------------------------------------------------------------------------- #
-from collections import namedtuple
 from pprint import pprint
 
 
 DAY = 22
-EXAMPLE = True
+EXAMPLE = False
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
@@ -16,135 +15,107 @@ print("Day", DAY)
 # --------------------------------------------------------------------------- #
 #    Reading input                                                            #
 # --------------------------------------------------------------------------- #
-
-BOSS = (
-    {"Hit Points": 14, "Damage": 8}
-    if EXAMPLE else
-    {"Hit Points": 58, "Damage": 9}
-)   
-PLAYER = (
-    {"Hit Points": 14, "Mana": 250}
-    if EXAMPLE else
-    {"Hit Points": 50, "Mana": 500}
+ 
+BOSS_HP, DAMAGE, PLAYER_HP, MANA = (
+    (14, 8, 14, 250) if EXAMPLE else (58, 9, 50, 500)
 )
-
-print(f"Player: {PLAYER}; Boss: {BOSS}\n")
-
+ 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
 # --------------------------------------------------------------------------- #
+ 
+SPELLS_DIRECT = ("Missile", 53), ("Drain", 73)
+SPELLS_DELAYED = ("Shield", 113, 6), ("Poison", 173, 6), ("Recharge", 229, 5)
+ 
 
-Spell = namedtuple(
-    "Spell",
-    "Cost Cooldown Damage Armor Heal Mana".split(),
-    defaults=(0, 0, 0, 0, 0)
-)
-
-SPELLS = {
-    "Missile":  Spell(53, Damage=4),
-    "Drain":    Spell(73, Damage=2, Heal=2),
-    "Shield":   Spell(113, Cooldown=6, Armor=7),
-    "Poison":   Spell(173, Cooldown=6, Damage=3),
-    "Recharge": Spell(229, Cooldown=5, Mana=101)
-}
-pprint(SPELLS, sort_dicts=False)
-
-SPELLS = (
-    Spell(53, Damage=4),
-    Spell(73, Damage=2, Heal=2),
-    Spell(113, Cooldown=6, Armor=7),
-    Spell(173, Cooldown=6, Damage=3),
-    Spell(229, Cooldown=5, Mana=101)
-)
-pprint(SPELLS)
-cooldowns = {spell: spell.Cooldown for spell in SPELLS}
-pprint(cooldowns)
-
-
-SPELLS = tuple("Missile Drain Shield Poison Recharge".split())
-COSTS = (53, 73, 113, 173, 229)
-
-
-def effects(state):
-    hp_boss, hp_player, mana, cooldowns = state
-
-    new_cooldowns = []
-    for spell, cooldown in zip(SPELLS[2:], cooldowns):
-        new_cooldowns.append(cooldown - 1 if cooldown > 0 else 0)
-        if cooldown > 0:
-            if spell == "Shield":
-                armor = 7
-            elif spell == "Poison":
-                hp_boss -= 3
-            elif spell == "Recharge":
-                mana += 101
-    
-    return hp_boss, hp_player, mana, tuple(new_cooldowns)
-
-
-class Fight:
-
-    def __init__(self, hp_boss, hp, costs, armor, mana, cooldowns=None):
-        self.hp_boss = hp_boss
-        self.hp = hp,
-        self.costs = costs
-        self.mana = mana
-        if cooldowns is None:
-            self.cooldowns = dict.fromkeys(SPELLS[2:], 0)
-        else:
-            self.cooldowns = dict(zip(SPELLS[2:], cooldowns))
-
-    def take_effect(self):
-        for spell, cooldown in self.cooldowns.itmes():
-            if cooldown > 0:
-                if spell == "Shield":
-                    self.armor = 7
-                elif spell == "Poison":
-                    self.hp_boss -= 3
-                elif spell == "Recharge":
-                    self.mana += 101
-                self.cooldowns[spell] -= 1
-        
-
-def fights():
+def fights(hard=False):
     minimum = float("inf")
-    
-    hp_boss, damage = BOSS["Hit Points"], BOSS["Damage"]
-    hp_player, mana = PLAYER["Hit Points"], PLAYER["Mana"]
-    paths = [(0, hp_boss, hp_player, mana, (0, 0, 0))]
+   
+    paths = [(0, BOSS_HP, PLAYER_HP, MANA, 0, tuple())]
     while paths:
-        path = paths.pop()
-        costs, state = path[0], path[1:]
+        turn, boss_hp, player_hp, mana, costs, spells = paths.pop()
+       
+        # Discontinue the branch if costs are too high
+        if costs >= minimum:
+            continue
+
+        # Hard mode
+        if hard and turn % 2 == 0:
+            player_hp -= 1
+            if player_hp <= 0:
+                continue
         
-        # Players turn
-        hp_boss, hp_player, mana, cooldowns = effects(state)
-        if hp_boss <= 0:
+        # Effects at the beginning of the turn
+        armor = 0
+        spells_new, spells_active = [], set()
+        for spell, cooldown in spells:
+            match spell:  # Effects
+                case "Shield": armor = 7
+                case "Poison": boss_hp -= 3
+                case "Recharge": mana += 101
+            if cooldown > 1:  # Cooldown reduction
+                spells_new.append((spell, cooldown - 1))
+                spells_active.add(spell)
+        if boss_hp <= 0:  # Adjust minimum if boss is dead
             minimum = min(minimum, costs)
             continue
-        if mana < 53:
-            continue
-
-        for spell, cost in zip(SPELLS, COSTS):
-            if cost <= mana:
-                
-        
-        # Bosses turn
-        hp_player -= max(1, armor - damage)
+ 
+        if (turn := turn + 1) % 2:  # Players turn           
+            # Choose next spell
+            for spell, cost in SPELLS_DIRECT:  # Spells with direct results
+                costs_new = costs + cost
+                if cost > mana or costs_new >= minimum:  # Not enough mana or suboptimal
+                    break
+                boss_hp_new, player_hp_new = boss_hp, player_hp
+                match spell:
+                    case "Missile": boss_hp_new -= 4
+                    case "Drain":
+                        boss_hp_new -= 2
+                        player_hp_new += 2
+                if boss_hp_new <= 0:  # Adjust minimum if boss is dead
+                    minimum = min(minimum, costs_new)
+                else:
+                    paths.append((
+                        turn, boss_hp_new, player_hp_new,
+                        mana - cost, costs_new,
+                        tuple(spells_new)
+                    ))
+ 
+            for spell, cost, cooldown in SPELLS_DELAYED:  # Spells with delayed results
+                costs_new = costs + cost
+                if cost > mana or costs_new >= minimum:  # Not enough mana or suboptimal
+                    break
+                if spell not in spells_active:
+                    paths.append((
+                        turn, boss_hp, player_hp, mana - cost, costs_new,
+                        tuple(spells_new + [(spell, cooldown)])
+                    ))
+       
+        else:  # Bosses turn
+            # Damage
+            player_hp -= max(1, DAMAGE - armor)
+ 
+            # Extend paths if player still alive
+            if player_hp > 0:
+                paths.append((
+                    turn, boss_hp, player_hp, mana, costs, tuple(spells_new)
+                ))
+   
+    return minimum
+ 
 
 # --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
-
+ 
 
 def part_1():
-    """Ojective: find the least amount of mana spent to win over the boss"""
-    return None
+    return fights()
 
 
-solution = part_1()
-# assert solution == (if EXAMPLE else)
-print(solution)
+print(solution := part_1())
+assert solution == (568 if EXAMPLE else 1269)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -153,9 +124,8 @@ print("Part 2: ", end="")
 
 
 def part_2():
-    return None
+    return fights(hard=True)
 
 
-solution = part_2()
-# assert solution == (if EXAMPLE else)
-print(solution)
+print(solution := part_2())
+assert solution == (float("inf") if EXAMPLE else 1309)

@@ -62,23 +62,23 @@ print(solution)
 print("Part 2: ", end="")
 
 # Rolls distribution: 3 independent rolls with result 1, 2 or 3
-ROLLS = {3: 1, 4: 3, 5: 6, 6: 7, 7: 6, 8: 3, 9: 1}
+ROLLS = (3, 1), (4, 3), (5, 6), (6, 7), (7, 6), (8, 3), (9, 1)
  
 
 def get_states(start):
-    """Calculate the finishing leafs and pending branches over the
-    (simplified) turn tree
+    """Calculate the finishing leafs and pending branches over the (simplified)
+    turn tree
     """
     states = []
     turn_last = {start: {0: 1}}
     while True:
         turn = defaultdict(Counter)
         for start in turn_last:
-            for rolls, n in ROLLS.items():
+            for rolls, n in ROLLS:
                 position = (start + rolls) % 10 or 10
                 for score, m in turn_last[start].items():
-                    if score < 21:
-                        turn[position][min(score + position, 21)] += n * m
+                    if score >= 21: continue
+                    turn[position][min(score + position, 21)] += n * m    
         turn_last = turn
         scores = sum(turn.values(), Counter())
         states.append((scores[21], sum(scores.values()) - scores[21]))
@@ -88,8 +88,8 @@ def get_states(start):
 
 def part_2(start_1, start_2):
     """Use the finishing/pending states of the 2 players to count the wins:
-    Sum over # finishing branches x # pending branches of other player one
-    turn before.
+    sum over #(finishing branches) x #(pending branches) of other player one
+    turn before
     """
     pending_2 = wins_1 = wins_2 = 0
     states = zip(get_states(start_1), get_states(start_2))
