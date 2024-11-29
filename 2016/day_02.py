@@ -22,9 +22,9 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 with open(file_name, "r") as file:
-    pass
+    directions = tuple(file.read().splitlines())
 if EXAMPLE:
-    #pprint()
+    pprint(directions)
     pass
 
 # --------------------------------------------------------------------------- #
