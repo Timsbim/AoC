@@ -59,7 +59,8 @@ def fights(hard=False):
         if boss_hp <= 0:  # Adjust minimum if boss is dead
             minimum = min(minimum, costs)
             continue
- 
+        spells_new = tuple(spells_new)
+        
         if (turn := turn + 1) % 2:  # Players turn           
             # Choose next spell
             for spell, cost in SPELLS_DIRECT:  # Spells with direct results
@@ -78,7 +79,7 @@ def fights(hard=False):
                     stack.append((
                         turn, boss_hp_new, player_hp_new,
                         mana - cost, costs_new,
-                        tuple(spells_new)
+                        spells_new
                     ))
  
             for spell, cost, cooldown in SPELLS_DELAYED:  # Spells with delayed results
@@ -88,7 +89,7 @@ def fights(hard=False):
                 if spell not in spells_active:
                     stack.append((
                         turn, boss_hp, player_hp, mana - cost, costs_new,
-                        tuple(spells_new + [(spell, cooldown)])
+                        spells_new + ((spell, cooldown),)
                     ))
 
         else:  # Bosses turn
@@ -98,7 +99,7 @@ def fights(hard=False):
             # Extend stack if player still alive
             if player_hp > 0:
                 stack.append((
-                    turn, boss_hp, player_hp, mana, costs, tuple(spells_new)
+                    turn, boss_hp, player_hp, mana, costs, spells_new
                 ))
    
     return minimum

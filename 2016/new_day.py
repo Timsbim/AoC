@@ -4,7 +4,7 @@ from pathlib import Path
 from textwrap import dedent
 
 
-YEAR = 2015
+YEAR = 2016
 
 
 parser = ArgumentParser()
@@ -51,7 +51,7 @@ content += dedent(f"""\
     # --------------------------------------------------------------------------- #
     print("Day", DAY)
 
-    file_name = f"2015/day_{{DAY:0>2}}_input"
+    file_name = f"2016/day_{{DAY:0>2}}_input"
     if EXAMPLE:
         file_name += "_example"
     file_name += ".txt"
@@ -64,6 +64,7 @@ content += dedent(f"""\
         pass
     if EXAMPLE:
         #pprint()
+        pass
 
     # --------------------------------------------------------------------------- #
     #    Helper                                                                   #
@@ -81,9 +82,8 @@ content += dedent(f"""\
         return None
 
 
-    solution = part_1()
+    print(solution := part_1())
     # assert solution == (if EXAMPLE else)
-    print(solution)
 
     # --------------------------------------------------------------------------- #
     #    Part 2                                                                   #
@@ -95,8 +95,7 @@ content += dedent(f"""\
         return None
 
 
-    solution = part_2()
+    print(solution := part_2())
     # assert solution == (if EXAMPLE else)
-    print(solution)
     """)
 path.write_text(content)
