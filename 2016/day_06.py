@@ -1,23 +1,37 @@
 # --------------------------------------------------------------------------- #
-#    Day 5                                                                    #
+#    Day 6                                                                    #
 # --------------------------------------------------------------------------- #
-from hashlib import md5
 from pprint import pprint
 
 
-DAY = 5
-EXAMPLE = False
+DAY = 6
+EXAMPLE = True
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
 # --------------------------------------------------------------------------- #
 print("Day", DAY)
 
+file_name = f"2016/input/day_{DAY:0>2}"
+if EXAMPLE:
+    file_name += "_example"
+file_name += ".txt"
+
 # --------------------------------------------------------------------------- #
 #    Reading input                                                            #
 # --------------------------------------------------------------------------- #
 
-ID = "abc" if EXAMPLE else "ugkcyxxp"
+with open(file_name, "r") as file:
+    pass
+if EXAMPLE:
+    #pprint()
+    pass
+
+# --------------------------------------------------------------------------- #
+#    Helper                                                                   #
+# --------------------------------------------------------------------------- #
+
+
 
 # --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
@@ -25,21 +39,12 @@ ID = "abc" if EXAMPLE else "ugkcyxxp"
 print("Part 1: ", end="")
 
 
-def part_1(ID):
-    i, pwd = 0, ""
-    while True:
-        h = md5()
-        h.update(f"{ID}{i}".encode())
-        string = h.hexdigest()
-        if string.startswith("00000"):
-            pwd += string[5]
-            if len(pwd) == 8:
-                return pwd
-        i += 1
+def part_1():
+    return None
 
 
-print(solution := part_1(ID))
-assert solution == ("18f47a30" if EXAMPLE else "d4cd2ee1")
+print(solution := part_1())
+#assert solution == (if EXAMPLE else)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -47,21 +52,9 @@ assert solution == ("18f47a30" if EXAMPLE else "d4cd2ee1")
 print("Part 2: ", end="")
 
 
-def part_2(ID):
-    i, count, pwd = 0, 0, [""] * 8
-    while True:
-        h = md5()
-        h.update(f"{ID}{i}".encode())
-        string = h.hexdigest()
-        if string.startswith("00000"):
-            index = int(string[5], base=16)
-            if 0 <= index <= 7 and pwd[index] == "":
-                pwd[index] = string[6]
-                count += 1
-                if count == 8:
-                    return "".join(pwd)
-        i += 1
+def part_2():
+    return None
 
 
-print(solution := part_2(ID))
-assert solution == ("05ace8e3" if EXAMPLE else "f2c730e5")
+print(solution := part_2())
+#assert solution == (if EXAMPLE else)
