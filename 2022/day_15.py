@@ -13,7 +13,7 @@ EXAMPLE = False
 # --------------------------------------------------------------------------- #
 print("Day", DAY)
 
-file_name = f"2022/day_{DAY:0>2}_input"
+file_name = f"2022/input/day_{DAY:0>2}"
 row, grid_max = 2_000_000, 4_000_000
 if EXAMPLE:
     file_name += "_example"
