@@ -1,11 +1,11 @@
 # --------------------------------------------------------------------------- #
-#    Day 3                                                                    #
+#    Day 4                                                                    #
 # --------------------------------------------------------------------------- #
 from pprint import pprint
 
 
-DAY = 3
-EXAMPLE = False
+DAY = 4
+EXAMPLE = True
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
@@ -22,18 +22,15 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 with open(file_name, "r") as file:
-    triplets = tuple(tuple(map(int, row.split())) for row in file)
+    pass
 if EXAMPLE:
-    pprint(triplets)
+    #pprint()
+    pass
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
 # --------------------------------------------------------------------------- #
 
-
-def is_triangle(triple):
-    a, b, c = triple
-    return a + b > c and a + c > b and b + c > a
 
 
 # --------------------------------------------------------------------------- #
@@ -43,11 +40,11 @@ print("Part 1: ", end="")
 
 
 def part_1():
-    return sum(map(is_triangle, triplets))
+    return None
 
 
 print(solution := part_1())
-assert solution == (3 if EXAMPLE else 1050)
+#assert solution == (if EXAMPLE else)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -56,12 +53,8 @@ print("Part 2: ", end="")
 
 
 def part_2():
-    return sum(
-        is_triangle(column[i:i+3])
-        for column in zip(*triplets)
-        for i in range(0, len(column), 3)
-    )
+    return None
 
 
 print(solution := part_2())
-assert solution == (6 if EXAMPLE else 1921)
+#assert solution == (if EXAMPLE else)
