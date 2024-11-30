@@ -12,7 +12,7 @@ EXAMPLE = False
 # --------------------------------------------------------------------------- #
 print("Day", DAY)
 
-file_name = f"2016/day_{DAY:0>2}_input"
+file_name = f"2016/input/day_{DAY:0>2}_input"
 if EXAMPLE:
     file_name += "_example"
 file_name += ".txt"
