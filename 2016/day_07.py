@@ -1,12 +1,11 @@
 # --------------------------------------------------------------------------- #
-#    Day 6                                                                    #
+#    Day 7                                                                    #
 # --------------------------------------------------------------------------- #
-from collections import Counter
 from pprint import pprint
 
 
-DAY = 6
-EXAMPLE = False
+DAY = 7
+EXAMPLE = True
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
@@ -23,7 +22,16 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 with open(file_name, "r") as file:
-    columns = tuple(zip(*(row.strip() for row in file)))
+    pass
+if EXAMPLE:
+    #pprint()
+    pass
+
+# --------------------------------------------------------------------------- #
+#    Helper                                                                   #
+# --------------------------------------------------------------------------- #
+
+
 
 # --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
@@ -31,12 +39,12 @@ with open(file_name, "r") as file:
 print("Part 1: ", end="")
 
 
-def part_1(columns):
-    return "".join(Counter(column).most_common(1)[0][0] for column in columns)
+def part_1():
+    return None
 
 
-print(solution := part_1(columns))
-assert solution == ("easter" if EXAMPLE else "xdkzukcf")
+print(solution := part_1())
+#assert solution == (if EXAMPLE else)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -44,9 +52,9 @@ assert solution == ("easter" if EXAMPLE else "xdkzukcf")
 print("Part 2: ", end="")
 
 
-def part_2(columns):
-    return "".join(Counter(column).most_common()[-1][0] for column in columns)
+def part_2():
+    return None
 
 
-print(solution := part_2(columns))
-assert solution == ("advent" if EXAMPLE else "cevsgyvd")
+print(solution := part_2())
+#assert solution == (if EXAMPLE else)
