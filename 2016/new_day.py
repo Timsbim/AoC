@@ -18,13 +18,16 @@ if day < 1 or 25 < day:
 
 day_str = f"{day:0>2}"
 
-path = Path(f"{YEAR}/day_{day_str}_input_example.txt")
+path_input = Path(f"{YEAR}/input/")
+path_input.mkdir(exist_ok=True)
+
+path = path_input / f"day_{day_str}_example.txt"
 if path.exists():
     print(f"File '{str(path)}' already exists!")
 else:
     path.touch()
 
-path = Path(f"{YEAR}/day_{day_str}_input.txt")
+path = path_input / f"day_{day_str}.txt"
 if path.exists():
     print(f"File '{str(path)}' already exists!")
 else:
@@ -51,7 +54,7 @@ content += dedent(f"""\
     # --------------------------------------------------------------------------- #
     print("Day", DAY)
 
-    file_name = f"2016/input/day_{{DAY:0>2}}_input"
+    file_name = f"{YEAR}/input/day_{{DAY:0>2}}"
     if EXAMPLE:
         file_name += "_example"
     file_name += ".txt"
@@ -83,7 +86,7 @@ content += dedent(f"""\
 
 
     print(solution := part_1())
-    # assert solution == (if EXAMPLE else)
+    #assert solution == (if EXAMPLE else)
 
     # --------------------------------------------------------------------------- #
     #    Part 2                                                                   #
@@ -96,6 +99,6 @@ content += dedent(f"""\
 
 
     print(solution := part_2())
-    # assert solution == (if EXAMPLE else)
+    #assert solution == (if EXAMPLE else)
     """)
 path.write_text(content)

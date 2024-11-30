@@ -2,6 +2,7 @@ import re
 import sys
 from argparse import ArgumentParser
 from pathlib import Path
+from shutil import move
 
 
 # Get argument: year to process
@@ -22,5 +23,22 @@ path_input = path / "input"
 path_input.mkdir(exist_ok=True)
 
 # Move input files into the new folder
-for file_path in path.glob("day_[0-2][0-9]_input*.*"):
-    print(file_path)
+print("Moving input files ...")
+for file in path_input.glob("day_[0-2][0-9]_input*.*"):
+    print("  ", file)
+    move(file, path_input / file.name.replace("_input", ""))
+print("... finished")
+
+
+# Replace file path for input files in Python files
+print("Modifying Python files ...")
+pattern = f'f"{year}/day_{{DAY:0>2}}_input"'
+repl = f'f"{year}/input/day_{{DAY:0>2}}"'
+for file_path in path.glob("day_[0-2][0-9].py"):
+    print(" ", file_path)
+    with open(file_path, 'r') as file:
+        code = file.read()
+    code = code.replace(pattern, repl)
+    with open(file_path, 'w') as file:
+        file.write(code)
+print("... finished")
