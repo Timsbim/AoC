@@ -29,6 +29,8 @@ def archive_files(day, year=2024):
     path = Path()
     hist_path = Path(str(year))
     hist_path.mkdir(exist_ok=True)
+    hist_input_path = hist_path / "input"
+    hist_input_path.mkdir(exist_ok=True)    
 
     # Creating the `day_n.py` file if it doesn't exist
     daypy_path = Path(f"day_{day:0>2}.py")
@@ -48,7 +50,11 @@ def archive_files(day, year=2024):
     for file_path in path.glob("day_*.*"):
         day_str = re_day.search(file_path.name).group(1)
         if int(day_str) <= day:
-            hist_file_path = hist_path / file_path.name
+            if file_path.name.endswith(".py"):
+                hist_file_path = hist_path / file_path.name
+            else:
+                new_filename = file_path.name.replace("_input", "")
+                hist_file_path = hist_input_path / new_filename
             move = True
             if hist_file_path.exists() and not override(str(hist_file_path)):
                 move = False
@@ -101,7 +107,7 @@ def part_1():
 
 
 print(solution := part_1())
-# assert solution == (if EXAMPLE else)
+#assert solution == (if EXAMPLE else)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -114,7 +120,7 @@ def part_2():
 
 
 print(solution := part_2())
-# assert solution == (if EXAMPLE else)
+#assert solution == (if EXAMPLE else)
 
 ''')
 
@@ -146,5 +152,6 @@ def write_new_blank_files(day):
 if __name__ == "__main__":
 
     day = get_argument()
-    archive_files(day)
+    if day > 0:
+        archive_files(day)
     write_new_blank_files(day)
