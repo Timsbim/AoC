@@ -5,7 +5,7 @@ from functools import lru_cache
 
 
 # Reading input
-with open("2021/day_07_input.csv", "r") as file:
+with open("2021/input/day_07.csv", "r") as file:
     positions_input = [int(n) for n in file.read().strip().split(",")]
 #positions_input = [16, 1, 2, 0, 4, 2, 7, 1, 2, 14]
 #print(positions)

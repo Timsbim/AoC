@@ -4,7 +4,7 @@ from collections import Counter
 
 
 # Reading input
-with open("2021/day_05_input.csv", "r") as file:
+with open("2021/input/day_05.csv", "r") as file:
     lines = [
         tuple(
             tuple(int(n) for n in pair.split(",")) for pair in line.split("->")

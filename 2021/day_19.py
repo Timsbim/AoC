@@ -1,7 +1,6 @@
 # --------------------------------------------------------------------------- #
 #    Day 19                                                                   #
 # --------------------------------------------------------------------------- #
-import pickle
 from pprint import pprint
 from itertools import combinations, permutations, product
 
@@ -13,7 +12,7 @@ EXAMPLE = False
 #    Preparation                                                              #
 # --------------------------------------------------------------------------- #
 
-file_name = f"2021/day_{DAY:0>2}_input"
+file_name = f"2021/input/day_{DAY:0>2}"
 if EXAMPLE:
     file_name += "_example"
 file_name += ".csv"
@@ -152,11 +151,7 @@ def span_graph(graph):
 
 
 scanners = get_scanners(file_name)
-if EXAMPLE:
-    matches = get_matches(scanners)
-else:
-    with open("2021/day_19_matches.pkl", "rb") as file:
-        matches = pickle.load(file)
+matches = get_matches(scanners)
 graph = build_graph(matches.keys())
 paths = span_graph(graph)
 if EXAMPLE:
@@ -183,7 +178,7 @@ print(len(beacons))  # 400
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
 # --------------------------------------------------------------------------- #
-print("\nPart 2: ", end="")
+print("Part 2: ", end="")
 
 
 def manhattan(scanner_1, scanner_2):

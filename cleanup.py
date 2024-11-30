@@ -22,12 +22,12 @@ def override(filename):
         return True if answer == "y" else False
 
 
-def archive_files(day, year=2023):
+def archive_files(day, year=2024):
     """ Move all the files for days less or equal to the given to archive
     folder
     """
     path = Path()
-    hist_path = path / str(year)
+    hist_path = Path(str(year))
     hist_path.mkdir(exist_ok=True)
 
     # Creating the `day_n.py` file if it doesn't exist
@@ -39,7 +39,7 @@ def archive_files(day, year=2023):
         pattern = '^file_name = f"day_{DAY:0>2}_input"$'
         if match := re.search(pattern, content, flags=re.M):
             start, end = match.span()
-            repl = f'file_name = f"{year}/day_{{DAY:0>2}}_input"'
+            repl = f'file_name = f"{year}/input/day_{{DAY:0>2}}"'
             content = content[:start] + repl + content[end:]
         daypy_path.write_text(content)
 

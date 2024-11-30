@@ -4,7 +4,7 @@ from collections import defaultdict
 
 
 # Reading input
-with open("2021/day_12_input.csv", "r") as file:
+with open("2021/input/day_12.csv", "r") as file:
     edges_input = [tuple(line.strip().split("-")) for line in file]
 # pprint(edges_input)
 

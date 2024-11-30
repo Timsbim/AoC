@@ -9,7 +9,7 @@ EXAMPLE = False
 
 
 # Preparation
-file_name = f"2021/day_{DAY:0>2}_input"
+file_name = f"2021/input/day_{DAY:0>2}"
 if EXAMPLE:
     file_name += "_example"
 file_name += ".csv"

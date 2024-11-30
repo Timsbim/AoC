@@ -3,7 +3,7 @@ from pprint import pprint
 
 
 # Reading input
-with open("2021/day_10_input.csv", "r") as file:
+with open("2021/input/day_10.csv", "r") as file:
     chunks = [line.strip() for line in file]
 # pprint(chunks)
 

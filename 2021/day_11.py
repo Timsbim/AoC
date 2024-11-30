@@ -4,7 +4,7 @@ from collections import Counter
 
 
 # Reading input
-with open("2021/day_11_input.csv", "r") as file:
+with open("2021/input/day_11.csv", "r") as file:
     levels_input = [
         [int(number) for number in line.strip()]
         for line in file

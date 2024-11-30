@@ -32,14 +32,26 @@ print("... finished")
 
 # Replace file path for input files in Python files
 print("Modifying Python files ...")
+pattern = re.compile(
+    f"({year}/)(day_[0-2]\d)_input((?:_example)?.(?:csv|txt))"
+)
+def repl(m): return f"{m[1]}input/{m[2]}{m[3]}"
+for file_path in path.glob("day_[0-2][0-9].py"):
+    with open(file_path, 'r') as file:
+        code = file.read()
+    if pattern.search(code):
+        print(" ", file_path)
+        code = pattern.sub(repl, code)
+        with open(file_path, 'w') as file:
+            file.write(code)
 pattern = f'f"{year}/day_{{DAY:0>2}}_input"'
 repl = f'f"{year}/input/day_{{DAY:0>2}}"'
 for file_path in path.glob("day_[0-2][0-9].py"):
-    print(" ", file_path)
     with open(file_path, 'r') as file:
         code = file.read()
-    code = code.replace(pattern, repl)
-    with open(file_path, 'w') as file:
-        file.write(code)
-    #break
+    if pattern in code:
+        print(" ", file_path)
+        code = code.replace(pattern, repl)
+        with open(file_path, 'w') as file:
+            file.write(code)
 print("... finished")

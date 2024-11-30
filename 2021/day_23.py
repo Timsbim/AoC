@@ -8,24 +8,6 @@ DAY = 23
 EXAMPLE = False
 
 # --------------------------------------------------------------------------- #
-#    Preparation                                                              #
-# --------------------------------------------------------------------------- #
-
-file_name = f"2021/day_{DAY:0>2}_input"
-if EXAMPLE:
-    file_name += "_example"
-file_name += ".csv"
-
-# --------------------------------------------------------------------------- #
-#    Reading input                                                            #
-# --------------------------------------------------------------------------- #
-
-# with open(file_name, "r") as file:
-#    pass
-
-# pprint(data)
-
-# --------------------------------------------------------------------------- #
 #    Helper functions                                                         #
 # --------------------------------------------------------------------------- #
 
@@ -35,7 +17,7 @@ file_name += ".csv"
 # --------------------------------------------------------------------------- #
 print("\nPart 1:")
 
-file_name = f"day_{DAY:0>2}_input_part_1.csv"
+file_name = f"2021/input/day_{DAY:0>2}_part_1.csv"
 with open(file_name, "r") as file:
     score = 0
     for line in file:
@@ -50,7 +32,7 @@ print(score) # 16489
 # --------------------------------------------------------------------------- #
 print("\nPart 2:")
 
-file_name = f"day_{DAY:0>2}_input_part_2.csv"
+file_name = f"2021/input/day_{DAY:0>2}_part_2.csv"
 with open(file_name, "r") as file:
     score = 0
     for line in file:

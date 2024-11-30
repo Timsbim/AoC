@@ -2,7 +2,7 @@
 
 
 # Reading input
-with open("2021/day_01_input.csv", "r") as file:
+with open("2021/input/day_01.csv", "r") as file:
     depths = [int(line) for line in file]
 
 

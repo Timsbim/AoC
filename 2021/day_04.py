@@ -4,7 +4,7 @@ from collections import defaultdict
 
 
 # Reading input
-with open("2021/day_04_input.csv", "r") as file:
+with open("2021/input/day_04.csv", "r") as file:
     draw_numbers = list(
         reversed([int(n) for n in next(file).strip().split(",")])
     )

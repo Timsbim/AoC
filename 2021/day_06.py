@@ -3,7 +3,7 @@ from pprint import pprint
 
 
 # Reading input
-with open("2021/day_06_input.csv", "r") as file:
+with open("2021/input/day_06.csv", "r") as file:
     timers_input = [int(n) for n in file.read().strip().split(",")]
 #timers_input = [3, 4, 3, 1, 2]
 

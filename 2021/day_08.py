@@ -4,7 +4,7 @@ from collections import defaultdict
 
 
 # Reading input
-with open("2021/day_08_input.csv", "r") as file:
+with open("2021/input/day_08.csv", "r") as file:
     signals = []
     for line in file:
         parts = line.split("|")

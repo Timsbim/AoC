@@ -6,7 +6,7 @@ from math import prod
 
 
 # Reading input
-with open("2021/day_09_input.csv", "r") as file:
+with open("2021/input/day_09.csv", "r") as file:
     numbers = [[int(number) for number in line.strip()] for line in file]
 """
 numbers = [

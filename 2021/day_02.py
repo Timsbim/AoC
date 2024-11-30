@@ -3,7 +3,7 @@ from collections import Counter
 
 
 # Reading input
-with open("2021/day_02_input.csv", "r") as file:
+with open("2021/input/day_02.csv", "r") as file:
     steps = [
         (step, int(number))
         for step, number in (line.rstrip().split(" ") for line in file)
