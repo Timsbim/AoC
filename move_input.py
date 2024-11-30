@@ -24,7 +24,7 @@ path_input.mkdir(exist_ok=True)
 
 # Move input files into the new folder
 print("Moving input files ...")
-for file in path_input.glob("day_[0-2][0-9]_input*.*"):
+for file in path.glob("day_[0-2][0-9]_input*.*"):
     print("  ", file)
     move(file, path_input / file.name.replace("_input", ""))
 print("... finished")
@@ -41,4 +41,5 @@ for file_path in path.glob("day_[0-2][0-9].py"):
     code = code.replace(pattern, repl)
     with open(file_path, 'w') as file:
         file.write(code)
+    #break
 print("... finished")
