@@ -71,13 +71,13 @@ if EXAMPLE:
 # --------------------------------------------------------------------------- #
 
 
-def bot_step(val_1, bot):
+def bot_step(v1, bot):
     low, high = bot["low"], bot["high"]
     if low is None and high is None:
-        bot["low"] = val_1
+        bot["low"] = v1
     else:
-        val_2 = high if low is None else low
-        bot["low"], bot["high"] = (val_1, val_2) if val_1 <= val_2 else (val_2, val_1)
+        v2 = high if low is None else low
+        bot["low"], bot["high"] = (v1, v2) if v1 <= v2 else (v2, v1)
         return bot
 
 
