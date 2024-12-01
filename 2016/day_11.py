@@ -5,7 +5,7 @@ from pprint import pprint
 
 
 DAY = 11
-EXAMPLE = True
+EXAMPLE = False
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
@@ -22,11 +22,12 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 FLOORS = (
-    [['HM', 'LM'], ['HG'], ['LG']]
+    (('HM', 'LM'), ('HG',), ('LG',))
     if EXAMPLE else
-    [['TG', 'TM', 'PG', 'SG'], ['PM', 'SM'], ['PG', 'PM', 'RG', 'RM']]
+    (('TG', 'TM', 'PG', 'SG'), ('PM', 'SM'), ('PG', 'PM', 'RG', 'RM'))
 )
 pprint(FLOORS)
+print(tuple(tuple(sorted(floor)) for floor in FLOORS))
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
@@ -41,6 +42,14 @@ def print_floors(floors):
 #    Part 1                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
+
+"""
+Possible floor constellations:
+- Empty
+- All chips
+- All generators
+- Complete chip-generator pairs only
+"""
 
 
 def part_1():
