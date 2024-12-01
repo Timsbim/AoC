@@ -121,7 +121,6 @@ def part_2():
 
 print(solution := part_2())
 #assert solution == (if EXAMPLE else)
-
 ''')
 
 
