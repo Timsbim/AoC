@@ -1,6 +1,7 @@
 # --------------------------------------------------------------------------- #
 #    Day 11                                                                   #
 # --------------------------------------------------------------------------- #
+from itertools import groupby
 from pprint import pprint
 
 
@@ -26,8 +27,14 @@ FLOORS = (
     if EXAMPLE else
     (('TG', 'TM', 'PG', 'SG'), ('PM', 'SM'), ('PG', 'PM', 'RG', 'RM'))
 )
-pprint(FLOORS)
 print(tuple(tuple(sorted(floor)) for floor in FLOORS))
+pprint((tuple(), tuple(), tuple(), tuple(sorted(item for floor in FLOORS for item in floor))))
+def key(item): return item[-1]
+pprint(tuple(
+    tuple(sorted(group))
+    for floor in FLOORS
+    for k, group in groupby(sorted(floor, key=key), key=key)
+))
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
