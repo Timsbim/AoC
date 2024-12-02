@@ -153,4 +153,5 @@ if __name__ == "__main__":
     day = get_argument()
     if day > 0:
         archive_files(day)
+        pass
     write_new_blank_files(day)
