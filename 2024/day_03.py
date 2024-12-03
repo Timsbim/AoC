@@ -36,11 +36,10 @@ if EXAMPLE:
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
 
-RE_MUL = re.compile(r"mul\((\d{1,3}),(\d{1,3})\)")
-
 
 def part_1(memory):
-    return sum(int(m[1]) * int(m[2]) for m in RE_MUL.finditer(memory))
+    re_mul = re.compile(r"mul\((\d{1,3}),(\d{1,3})\)")
+    return sum(int(m[1]) * int(m[2]) for m in re_mul.finditer(memory))
 
 
 print(solution := part_1(memory))
@@ -53,15 +52,15 @@ print("Part 2: ", end="")
 
 
 def part_2(memory):
-    re_flip = re.compile(r"(do\(\)|don't\(\))")
+    re_trim = re.compile(r"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)")
     res, mul = 0, True
-    for part in re_flip.split(memory):
-        if part == "do()":
+    for m in re_trim.finditer(memory):
+        if m[0] == "do()":
             mul = True
-        elif part == "don't()":
+        elif m[0] == "don't()":
             mul = False
         elif mul:
-            res += part_1(part)
+            res += int(m[1]) * int(m[2])
     return res
 
 
