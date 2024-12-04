@@ -1,8 +1,6 @@
 # --------------------------------------------------------------------------- #
 #    Day 4                                                                    #
 # --------------------------------------------------------------------------- #
-from pprint import pprint
-
 
 DAY = 4
 EXAMPLE = False
@@ -27,12 +25,6 @@ if EXAMPLE:
     pprint(lines)
 
 # --------------------------------------------------------------------------- #
-#    Helpers                                                                  #
-# --------------------------------------------------------------------------- #
-
-ROWS, COLS = len(lines), len(lines[0])
-
-# --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
@@ -43,24 +35,25 @@ def count(line):
 
 
 def part_1(lines):
+    rows, cols = len(lines), len(lines[0])
     return (
         sum(count(line) for line in lines)
         + sum(count("".join(line)) for line in zip(*lines))
         + sum(
-            count("".join(lines[d+c][c] for c in range(min(ROWS - d, COLS))))
-            for d in range(ROWS)
+            count("".join(lines[d+c][c] for c in range(min(rows - d, cols))))
+            for d in range(rows)
         )
         + sum(
-            count("".join(lines[r][r+d] for r in range(min(COLS - d, ROWS))))
-            for d in range(1, COLS)
+            count("".join(lines[r][r+d] for r in range(min(cols - d, rows))))
+            for d in range(1, cols)
         )
         + sum(
-            count("".join(lines[d-c][c] for c in range(min(d + 1, COLS))))
-            for d in range(ROWS)
+            count("".join(lines[d-c][c] for c in range(min(d + 1, cols))))
+            for d in range(rows)
         )
         + sum(
-            count("".join(lines[r][d-r] for r in range(ROWS - 1, max(-1, d - COLS), -1)))
-            for d in range(ROWS, ROWS + COLS - 1)
+            count("".join(lines[r][d-r] for r in range(rows - 1, max(-1, d - cols), -1)))
+            for d in range(rows, rows + cols - 1)
         )
     )
 
@@ -75,12 +68,14 @@ print("Part 2: ", end="")
 
 
 def part_2(lines):
+    rows, cols = len(lines), len(lines[0])
     count, ms = 0, {"M", "S"}
     return sum(
         lines[r][c] == "A"
             and {lines[r-1][c-1], lines[r+1][c+1]} == ms
             and {lines[r-1][c+1], lines[r+1][c-1]} == ms
-        for r in range(1, ROWS - 1) for c in range(1, COLS - 1)
+        for r in range(1, rows - 1)
+        for c in range(1, cols - 1)
     )
 
 
