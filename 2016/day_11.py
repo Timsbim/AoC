@@ -3,6 +3,7 @@
 # --------------------------------------------------------------------------- #
 from itertools import groupby
 from pprint import pprint
+from operator import itemgetter
 
 
 DAY = 11
@@ -27,14 +28,36 @@ FLOORS = (
     if EXAMPLE else
     (('TG', 'TM', 'PG', 'SG'), ('PM', 'SM'), ('PG', 'PM', 'RG', 'RM'))
 )
-print(tuple(tuple(sorted(floor)) for floor in FLOORS))
-pprint((tuple(), tuple(), tuple(), tuple(sorted(item for floor in FLOORS for item in floor))))
-def key(item): return item[-1]
-pprint(tuple(
-    tuple(sorted(group))
+pprint(FLOORS)
+ 
+key = itemgetter(1)
+INITIAL_STATE = [
+    tuple(tuple(sorted(group)) for _, group in groupby(sorted(floor, key=key), key=key))
     for floor in FLOORS
-    for k, group in groupby(sorted(floor, key=key), key=key)
-))
+]
+pprint(INITIAL_STATE)
+ 
+generators = sorted(
+    part[0]
+    for floor in FLOORS
+    for part in floor
+    if part[1] == "G"
+)
+TARGET = (
+    3,  # Elevator on 4. floor
+    (tuple(), tuple()), (tuple(), tuple()), (tuple(), tuple()),  # The first 3 floors are empty
+    (tuple(f"{g}G" for g in generators),
+     tuple(f"{g}M" for g in generators))  # All parts in 3. floor
+)
+ 
+
+def to_state(floors):
+    pass
+ 
+
+def from_state(state):
+    pass
+ 
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
@@ -44,18 +67,27 @@ pprint(tuple(
 def print_floors(floors):
     pass
 
-  
+
 # --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
-
+ 
 """
 Possible floor constellations:
+ 
 - Empty
+- If at least 1 generator: if chip => also corresponding generator
 - All chips
 - All generators
-- Complete chip-generator pairs only
+[- Complete chip-generator pairs only <= part of 2. item]
+- Non-pairs => generators
+ 
+Possible loads:
+ 
+- 1 or 2 chips
+- 1 or 2 generators if: (generator isn't paired) or (no un-paired chip is left)
+- pair
 """
 
 

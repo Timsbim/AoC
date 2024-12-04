@@ -23,7 +23,10 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 if EXAMPLE:
-    memory = "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
+    memory = (
+        "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+"
+        "mul(32,64](mul(11,8)undo()?mul(8,5))"
+    )
 else:
     with open(file_name, "r") as file:
         memory = file.read().rstrip()
