@@ -25,11 +25,10 @@ file_name += ".txt"
 with open(file_name, "r") as file:
     orderings, updates = [],[]
     for line in file:
-        if "|" in line:
-            orderings.append(tuple(map(int, line.split("|"))))
-        else:
+        if "|" not in line:
             orderings = set(orderings)
             break
+        orderings.append(tuple(map(int, line.split("|"))))
     for line in file:
         updates.append(tuple(map(int, line.split(","))))
     updates = tuple(updates)
