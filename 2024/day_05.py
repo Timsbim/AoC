@@ -32,6 +32,7 @@ with open(file_name, "r") as file:
             break
     for line in file:
         updates.append(tuple(map(int, line.split(","))))
+    updates = tuple(updates)
 
 if EXAMPLE:
     pprint(orderings)
@@ -42,7 +43,7 @@ if EXAMPLE:
 # --------------------------------------------------------------------------- #
 
 
-def is_correct(orderings, update):
+def is_correct(update):
     for i, n in enumerate(update[:-1]):
         for m in update[i+1:]:
             if (n, m) not in orderings:
@@ -58,9 +59,7 @@ print("Part 1: ", end="")
 
 def part_1(orderings, updates):
     return sum(
-        update[len(update) // 2]
-        for update in updates
-        if is_correct(orderings, update)
+        update[len(update) // 2] for update in updates if is_correct(update)
     )
 
 
@@ -73,16 +72,16 @@ assert solution == (143 if EXAMPLE else 6949)
 print("Part 2: ", end="")
 
 
-def order(orderings, a, b):
+def order(a, b):
     return 1 if (a, b) in orderings else -1
 
 
 def part_2(orderings, updates):
-    key = cmp_to_key(partial(order, orderings))
+    key = cmp_to_key(order)
     return sum(
         sorted(update, key=key)[len(update) // 2]
         for update in updates
-        if not is_correct(orderings, update)
+        if not is_correct(update)
     )
 
 
