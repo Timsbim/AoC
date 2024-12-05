@@ -72,12 +72,14 @@ assert solution == (143 if EXAMPLE else 6949)
 print("Part 2: ", end="")
 
 
-def order(a, b):
+def cmp(a, b):
     return 1 if (a, b) in orderings else -1
 
 
+key = cmp_to_key(cmp)
+
+
 def part_2(orderings, updates):
-    key = cmp_to_key(order)
     return sum(
         sorted(update, key=key)[len(update) // 2]
         for update in updates
