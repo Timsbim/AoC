@@ -23,15 +23,10 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 with open(file_name, "r") as file:
-    orderings, updates = [],[]
-    for line in file:
-        if "|" not in line:
-            orderings = set(orderings)
-            break
-        orderings.append(tuple(map(int, line.split("|"))))
-    for line in file:
-        updates.append(tuple(map(int, line.split(","))))
-    updates = tuple(updates)
+    orderings = set()
+    while "|" in (line := next(file)):
+        orderings.add(tuple(map(int, line.split("|"))))
+    updates = tuple(tuple(map(int, line.split(","))) for line in file)
 
 if EXAMPLE:
     pprint(orderings)
@@ -71,7 +66,7 @@ assert solution == (143 if EXAMPLE else 6949)
 print("Part 2: ", end="")
 
 
-def part_2(orderings, updates):
+def part_2(updates):
     def cmp(a, b): return 1 if (a, b) in orderings else -1
     key = cmp_to_key(cmp)
     return sum(
@@ -81,5 +76,5 @@ def part_2(orderings, updates):
     )
 
 
-print(solution := part_2(orderings, updates))
+print(solution := part_2(updates))
 assert solution == (123 if EXAMPLE else 4145)
