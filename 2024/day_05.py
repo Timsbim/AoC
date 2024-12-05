@@ -56,13 +56,13 @@ def is_correct(update):
 print("Part 1: ", end="")
 
 
-def part_1(orderings, updates):
+def part_1(updates):
     return sum(
         update[len(update) // 2] for update in updates if is_correct(update)
     )
 
 
-print(solution := part_1(orderings, updates))
+print(solution := part_1(updates))
 assert solution == (143 if EXAMPLE else 6949)
 
 # --------------------------------------------------------------------------- #
@@ -71,14 +71,9 @@ assert solution == (143 if EXAMPLE else 6949)
 print("Part 2: ", end="")
 
 
-def cmp(a, b):
-    return 1 if (a, b) in orderings else -1
-
-
-key = cmp_to_key(cmp)
-
-
 def part_2(orderings, updates):
+    def cmp(a, b): return 1 if (a, b) in orderings else -1
+    key = cmp_to_key(cmp)
     return sum(
         sorted(update, key=key)[len(update) // 2]
         for update in updates
