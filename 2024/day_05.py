@@ -1,18 +1,19 @@
 # --------------------------------------------------------------------------- #
-#    Day 6                                                                    #
+#    Day 5                                                                    #
 # --------------------------------------------------------------------------- #
+from functools import cmp_to_key, partial
 from pprint import pprint
 
 
-DAY = 6
-EXAMPLE = True
+DAY = 5
+EXAMPLE = False
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
 # --------------------------------------------------------------------------- #
 print("Day", DAY)
 
-file_name = f"day_{DAY:0>2}_input"
+file_name = f"2024/input/day_{DAY:0>2}"
 if EXAMPLE:
     file_name += "_example"
 file_name += ".txt"
@@ -22,17 +23,31 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 with open(file_name, "r") as file:
-    #for line in file:
-    pass
+    orderings, updates = [],[]
+    for line in file:
+        if "|" in line:
+            orderings.append(tuple(map(int, line.split("|"))))
+        else:
+            orderings = set(orderings)
+            break
+    for line in file:
+        updates.append(tuple(map(int, line.split(","))))
 
 if EXAMPLE:
-    #pprint()
-    pass
+    pprint(orderings)
+    pprint(updates)
 
 # --------------------------------------------------------------------------- #
 #    Helpers                                                                  #
 # --------------------------------------------------------------------------- #
 
+
+def is_correct(orderings, update):
+    for i, n in enumerate(update[:-1]):
+        for m in update[i+1:]:
+            if (n, m) not in orderings:
+                return False
+    return True
 
 
 # --------------------------------------------------------------------------- #
@@ -41,12 +56,16 @@ if EXAMPLE:
 print("Part 1: ", end="")
 
 
-def part_1():
-    return None
+def part_1(orderings, updates):
+    return sum(
+        update[len(update) // 2]
+        for update in updates
+        if is_correct(orderings, update)
+    )
 
 
-print(solution := part_1())
-#assert solution == (if EXAMPLE else)
+print(solution := part_1(orderings, updates))
+assert solution == (143 if EXAMPLE else 6949)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -54,9 +73,18 @@ print(solution := part_1())
 print("Part 2: ", end="")
 
 
-def part_2():
-    return None
+def order(orderings, a, b):
+    return 1 if (a, b) in orderings else -1
 
 
-print(solution := part_2())
-#assert solution == (if EXAMPLE else)
+def part_2(orderings, updates):
+    key = cmp_to_key(partial(order, orderings))
+    return sum(
+        sorted(update, key=key)[len(update) // 2]
+        for update in updates
+        if not is_correct(orderings, update)
+    )
+
+
+print(solution := part_2(orderings, updates))
+assert solution == (123 if EXAMPLE else 4145)
