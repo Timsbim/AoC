@@ -24,7 +24,6 @@ file_name += ".txt"
 with open(file_name, "r") as file:
     grid = tuple(line.rstrip() for line in file)
 ROWS, COLS = len(grid), len(grid[0])
-print(ROWS * COLS)
 obstacles = set()
 for r, line in enumerate(grid):
     for c, char in enumerate(line):
