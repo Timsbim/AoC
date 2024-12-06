@@ -22,7 +22,7 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 with open(file_name, "r") as file:
-    reports = [tuple(map(int, line.split())) for line in file]
+    reports = tuple(tuple(map(int, line.split())) for line in file)
  
 if EXAMPLE:
     pprint(reports)
