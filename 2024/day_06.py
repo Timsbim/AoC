@@ -1,7 +1,6 @@
 # --------------------------------------------------------------------------- #
 #    Day 6                                                                    #
 # --------------------------------------------------------------------------- #
-from itertools import product
 from pprint import pprint
 
 
@@ -45,6 +44,21 @@ if EXAMPLE:
 DIRECTION = dict(zip("^>v<", range(4)))
 DELTA = (-1, 0), (0, 1), (1, 0), (0, -1)
 
+
+def visit(obstacles, direction, start):
+    visited, (r, c), direction = {start}, start, DIRECTION[direction]
+    while True:
+        dr, dc = DELTA[direction]
+        r1, c1 = r + dr, c + dc
+        if r1 < 0 or r1 == ROWS or c1 < 0 or c1 == COLS:
+            return visited
+        if (r1, c1) in obstacles:
+            direction = (direction + 1) % 4
+        else:
+            r, c = r1, c1
+            visited.add((r, c)) 
+
+
 # --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
 # --------------------------------------------------------------------------- #
@@ -52,17 +66,7 @@ print("Part 1: ", end="")
 
 
 def part_1(obstacles, direction, start):
-    visited, (r, c), direction = {start}, start, DIRECTION[direction]
-    while True:
-        dr, dc = DELTA[direction]
-        r1, c1 = r + dr, c + dc
-        if r1 < 0 or r1 == ROWS or c1 < 0 or c1 == COLS:
-            return len(visited)
-        if (r1, c1) in obstacles:
-            direction = (direction + 1) % 4
-        else:
-            r, c = r1, c1
-            visited.add((r, c)) 
+    return len(visit(obstacles, direction, start))
 
 
 print(solution := part_1(obstacles, direction, start))
@@ -76,9 +80,7 @@ print("Part 2: ", end="")
 
 def part_2(obstacles, direction, start):
     count, direction_start = 0, DIRECTION[direction]
-    for position in product(range(ROWS), range(COLS)):
-        if position in obstacles or position == start:
-            continue
+    for position in visit(obstacles, direction, start) - {start}:
         obstacles_mod = obstacles | {position}
         (r, c), direction = start, direction_start
         visited = {(r, c, direction)}
