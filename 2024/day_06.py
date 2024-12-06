@@ -24,6 +24,7 @@ file_name += ".txt"
 with open(file_name, "r") as file:
     grid = tuple(line.rstrip() for line in file)
 ROWS, COLS = len(grid), len(grid[0])
+print(ROWS * COLS)
 obstacles = set()
 for r, line in enumerate(grid):
     for c, char in enumerate(line):
@@ -34,8 +35,8 @@ for r, line in enumerate(grid):
         else:
             start, direction = (r, c), char
 if EXAMPLE:
-    print(f"{direction = }, {start = }")
-    print("obstacles =", obstacles)
+    print(f"{start = }, {direction = }")
+    print(f"{obstacles = }")
 
 # --------------------------------------------------------------------------- #
 #    Helpers                                                                  #
@@ -45,7 +46,7 @@ DIRECTION = dict(zip("^>v<", range(4)))
 DELTA = (-1, 0), (0, 1), (1, 0), (0, -1)
 
 
-def visit(obstacles, direction, start):
+def visit(obstacles, start, direction):
     visited, (r, c), direction = {start}, start, DIRECTION[direction]
     while True:
         dr, dc = DELTA[direction]
@@ -65,11 +66,11 @@ def visit(obstacles, direction, start):
 print("Part 1: ", end="")
 
 
-def part_1(obstacles, direction, start):
-    return len(visit(obstacles, direction, start))
+def part_1(obstacles, start, direction):
+    return len(visit(obstacles, start, direction))
 
 
-print(solution := part_1(obstacles, direction, start))
+print(solution := part_1(obstacles, start, direction))
 assert solution == (41 if EXAMPLE else 4515)
 
 # --------------------------------------------------------------------------- #
@@ -78,9 +79,9 @@ assert solution == (41 if EXAMPLE else 4515)
 print("Part 2: ", end="")
 
 
-def part_2(obstacles, direction, start):
+def part_2(obstacles, start, direction):
     count, direction_start = 0, DIRECTION[direction]
-    for position in visit(obstacles, direction, start) - {start}:
+    for position in visit(obstacles, start, direction) - {start}:
         obstacles_mod = obstacles | {position}
         (r, c), direction = start, direction_start
         visited = {(r, c, direction)}
@@ -100,5 +101,5 @@ def part_2(obstacles, direction, start):
     return count
     
 
-print(solution := part_2(obstacles, direction, start))
+print(solution := part_2(obstacles, start, direction))
 assert solution == (6 if EXAMPLE else 1309)
