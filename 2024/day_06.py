@@ -39,43 +39,30 @@ if EXAMPLE:
     print("obstacles =", obstacles)
 
 # --------------------------------------------------------------------------- #
+#    Helpers                                                                  #
+# --------------------------------------------------------------------------- #
+
+DIRECTION = dict(zip("^>v<", range(4)))
+DELTA = (-1, 0), (0, 1), (1, 0), (0, -1)
+
+# --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
 
 
 def part_1(obstacles, direction, start):
-    visited, (r, c) = {start}, start
+    visited, (r, c), direction = {start}, start, DIRECTION[direction]
     while True:
-        if direction == "^":
-            if r == 0:
-                return len(visited)
-            if (r - 1, c) in obstacles:
-                direction = ">"
-            else:
-                r -= 1
-        elif direction == ">":
-            if c == COLS - 1:
-                return len(visited)
-            if (r, c + 1) in obstacles:
-                direction = "v"
-            else:
-                c += 1
-        elif direction == "v":
-            if r == ROWS - 1:
-                return len(visited)
-            if (r + 1, c) in obstacles:
-                direction = "<"
-            else:
-                r += 1
-        elif direction == "<":
-            if c == 0:
-                return len(visited)
-            if (r, c - 1) in obstacles:
-                direction = "^"
-            else:
-                c -= 1
-        visited.add((r, c))
+        dr, dc = DELTA[direction]
+        r1, c1 = r + dr, c + dc
+        if r1 < 0 or r1 == ROWS or c1 < 0 or c1 == COLS:
+            return len(visited)
+        if (r1, c1) in obstacles:
+            direction = (direction + 1) % 4
+        else:
+            r, c = r1, c1
+            visited.add((r, c)) 
 
 
 print(solution := part_1(obstacles, direction, start))
@@ -88,7 +75,7 @@ print("Part 2: ", end="")
 
 
 def part_2(obstacles, direction, start):
-    count, direction_start = 0, direction
+    count, direction_start = 0, DIRECTION[direction]
     for position in product(range(ROWS), range(COLS)):
         if position in obstacles or position == start:
             continue
@@ -96,39 +83,18 @@ def part_2(obstacles, direction, start):
         (r, c), direction = start, direction_start
         visited = {(r, c, direction)}
         while True:
-            if direction == "^":
-                if r == 0:
-                    break
-                if (r - 1, c) in obstacles_mod:
-                    direction = ">"
-                else:
-                    r -= 1
-            elif direction == ">":
-                if c == COLS - 1:
-                    break
-                if (r, c + 1) in obstacles_mod:
-                    direction = "v"
-                else:
-                    c += 1
-            elif direction == "v":
-                if r == ROWS - 1:
-                    break
-                if (r + 1, c) in obstacles_mod:
-                    direction = "<"
-                else:
-                    r += 1
-            elif direction == "<":
-                if c == 0:
-                    break
-                if (r, c - 1) in obstacles_mod:
-                    direction = "^"
-                else:
-                    c -= 1
+            dr, dc = DELTA[direction]
+            r1, c1 = r + dr, c + dc
+            if r1 < 0 or r1 == ROWS or c1 < 0 or c1 == COLS:
+                break
+            if (r1, c1) in obstacles_mod:
+                direction = (direction + 1) % 4
+            else:
+                r, c = r1, c1
             if (r, c, direction) in visited:
                 count += 1
                 break
-            visited.add((r, c, direction))
-        
+            visited.add((r, c, direction))        
     return count
     
 
