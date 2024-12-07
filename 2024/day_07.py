@@ -1,18 +1,20 @@
 # --------------------------------------------------------------------------- #
-#    Day 8                                                                    #
+#    Day 7                                                                    #
 # --------------------------------------------------------------------------- #
+from functools import partial
+from operator import add, mul
 from pprint import pprint
 
 
-DAY = 8
-EXAMPLE = True
+DAY = 7
+EXAMPLE = False
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
 # --------------------------------------------------------------------------- #
 print("Day", DAY)
 
-file_name = f"day_{DAY:0>2}_input"
+file_name = f"2024/input/day_{DAY:0>2}"
 if EXAMPLE:
     file_name += "_example"
 file_name += ".txt"
@@ -22,17 +24,31 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 with open(file_name, "r") as file:
-    #for line in file:
-    pass
+    equations = []
+    for line in file:
+        test, numbers = line.split(": ")
+        equations.append((int(test), tuple(map(int, numbers.split()))))
 
 if EXAMPLE:
-    #pprint()
-    pass
+    pprint(equations)
 
 # --------------------------------------------------------------------------- #
 #    Helpers                                                                  #
 # --------------------------------------------------------------------------- #
 
+
+def solve(ops, test, numbers):
+    length, stack = len(numbers), [(1, numbers[0])]
+    while stack:
+        i, n = stack.pop()
+        if i == length and n == test:
+            return True
+        if i < length:
+            for op in ops:
+                m = op(n, numbers[i])
+                if m <= test:
+                    stack.append((i + 1, m))
+    return False
 
 
 # --------------------------------------------------------------------------- #
@@ -41,12 +57,13 @@ if EXAMPLE:
 print("Part 1: ", end="")
 
 
-def part_1():
-    return None
+def part_1(equations):
+    check = partial(solve, (add, mul))
+    return sum(test for test, numbers in equations if check(test, numbers))
 
 
-print(solution := part_1())
-#assert solution == (if EXAMPLE else)
+print(solution := part_1(equations))
+assert solution == (3749 if EXAMPLE else 1038838357795)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -54,9 +71,11 @@ print(solution := part_1())
 print("Part 2: ", end="")
 
 
-def part_2():
-    return None
+def part_2(equations):
+    def concat(n, m): return int(f"{n}{m}")
+    check = partial(solve, (add, mul, concat))
+    return sum(test for test, numbers in equations if check(test, numbers))
 
 
-print(solution := part_2())
-#assert solution == (if EXAMPLE else)
+print(solution := part_2(equations))
+assert solution == (11387 if EXAMPLE else 254136560217241)
