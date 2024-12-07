@@ -1,6 +1,4 @@
-from functools import partial
 from operator import add, mul
-from pprint import pprint
 
 
 print("Day 7")
@@ -16,28 +14,21 @@ with open(file_name, "r") as file:
     for line in file:
         test, numbers = line.split(": ")
         equations.append((int(test), tuple(map(int, numbers.split()))))
+equations = tuple(equations)
 
 
-def solve(ops, test, numbers):
-    length, stack = len(numbers), [(1, numbers[0])]
-    while stack:
-        i, res0 = stack.pop()
-        n, i = numbers[i], i + 1
-        for op in ops:
-            res1 = op(res0, n)
-            if i == length:
-                if res1 == test:
-                    return True
-            elif res1 <= test:
-                stack.append((i, res1))
-    return False
+def solve(ops, test, numbers, res):        
+    n, *numbers = numbers
+    if len(numbers) == 0:
+        return any(op(res, n) == test for op in ops)
+    return any(solve(ops, test, numbers, op(res, n)) for op in ops)
 
 
-check = partial(solve, (add, mul))
-solution = sum(test for test, numbers in equations if check(test, numbers))
+ops = add, mul
+solution = sum(test for test, (n, *ns) in equations if solve(ops, test, ns, n))
 print(f"Part 1: {solution}")
 
 def concat(n, m): return int(f"{n}{m}")
-check = partial(solve, (add, mul, concat))
-solution = sum(test for test, numbers in equations if check(test, numbers))
+ops = add, mul, concat
+solution = sum(test for test, (n, *ns) in equations if solve(ops, test, ns, n))
 print(f"Part 2: {solution}")
