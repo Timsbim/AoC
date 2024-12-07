@@ -38,6 +38,7 @@ if EXAMPLE:
 
 
 def solve(ops, test, numbers):
+    """All numbers have length > 1, so no handling of length <= 1 necessary"""
     length, stack = len(numbers), [(1, numbers[0])]
     while stack:
         i, res0 = stack.pop()

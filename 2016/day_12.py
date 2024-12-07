@@ -1,13 +1,10 @@
 # --------------------------------------------------------------------------- #
-#    Day 11                                                                   #
+#    Day 12                                                                   #
 # --------------------------------------------------------------------------- #
-from collections import Counter
-from itertools import groupby
 from pprint import pprint
-from operator import itemgetter
 
 
-DAY = 11
+DAY = 12
 EXAMPLE = False
 
 # --------------------------------------------------------------------------- #
@@ -24,73 +21,57 @@ file_name += ".txt"
 #    Reading input                                                            #
 # --------------------------------------------------------------------------- #
 
-FLOORS = (
-    (('HM', 'LM'), ('HG',), ('LG',))
-    if EXAMPLE else
-    (('TG', 'TM', 'PG', 'SG'), ('PM', 'SM'), ('PG', 'PM', 'RG', 'RM'))
-)
-pprint(FLOORS)
-
-
-data = sorted(
-    (item[1], item[0], n)
-    for n, floor in enumerate(FLOORS)
-    for item in floor
-)
-kinds = {i: item[1] for i, item in zip(range(len(data) // 2), data)}
-pprint(kinds)
-LEN = len(data) // 2
-state = 0, tuple(n for _, _, n in data[:LEN]), tuple(n for _, _, n in data[LEN:])
-pprint(state)
-
-
-def to_state(floors):
-    pass
- 
-
-def from_state(state):
-    elevator, gens, chips = state
-    floors = [[], [],[], []]
- 
+REGISTER = dict(zip("abcd", range(4)))
+with open(file_name, "r") as file:
+    instructions = []
+    for line in file:
+        cmd, *args = line.split()
+        if cmd == "cpy":
+            v, r = args
+            instructions.append((cmd, v if v in REGISTER else int(v), r))
+        elif cmd == "jnz":
+            v, w = args
+            instructions.append((cmd, v if v in REGISTER else int(v), int(w)))
+        else:
+            instructions.append((cmd, args[0]))        
+instructions = tuple(instructions)
+print("Instructions:")
+pprint(instructions)
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
 # --------------------------------------------------------------------------- #
 
 
-def print_floors(floors):
-    pass
+def run(instructions, c=0):
+    p, regs = 0, dict.fromkeys("abcd", 0)
+    regs["c"] = c
+    while p < len(instructions):
+        cmd, *args = instructions[p]
+        match cmd:
+            case "inc": regs[args[0]] += 1
+            case "dec": regs[args[0]] -= 1
+            case "cpy": regs[args[1]] = regs.get(args[0], args[0])
+            case "jnz":
+                if regs.get(args[0], args[0]):
+                    p += args[1]
+                    continue
+        p += 1
+    return regs["a"]
 
 
 # --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
- 
-"""
-Possible floor constellations:
- 
-- Empty
-- If at least 1 generator: if chip => also corresponding generator
-- All chips
-- All generators
-[- Complete chip-generator pairs only <= part of 2. item]
-- Non-pairs => generators
- 
-Possible loads:
- 
-- 1 or 2 chips
-- 1 or 2 generators if: (generator isn't paired) or (no un-paired chip is left)
-- pair
-"""
 
 
-def part_1():
-    return None
+def part_1(instructions):
+    return run(instructions)
 
 
-print(solution := part_1())
-#assert solution == (if EXAMPLE else)
+print(solution := part_1(instructions))
+assert solution == (42 if EXAMPLE else 317993)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -98,9 +79,9 @@ print(solution := part_1())
 print("Part 2: ", end="")
 
 
-def part_2():
-    return None
+def part_2(instructions):
+    return run(instructions, c=1)
 
 
-print(solution := part_2())
-#assert solution == (if EXAMPLE else)
+print(solution := part_2(instructions))
+assert solution == (42 if EXAMPLE else 9227647)
