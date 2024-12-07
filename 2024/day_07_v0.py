@@ -1,6 +1,7 @@
 # --------------------------------------------------------------------------- #
 #    Day 7                                                                    #
 # --------------------------------------------------------------------------- #
+from functools import partial
 from operator import add, mul
 from pprint import pprint
 
@@ -28,7 +29,6 @@ with open(file_name, "r") as file:
         test, numbers = line.split(": ")
         equations.append((int(test), tuple(map(int, numbers.split()))))
 equations = tuple(equations)
-
 if EXAMPLE:
     pprint(equations)
 
@@ -37,11 +37,19 @@ if EXAMPLE:
 # --------------------------------------------------------------------------- #
 
 
-def solve(ops, test, numbers, res):        
-    n, *numbers = numbers
-    if len(numbers) == 0:
-        return any(op(res, n) == test for op in ops)
-    return any(solve(ops, test, numbers, op(res, n)) for op in ops)
+def solve(ops, test, numbers):
+    length, stack = len(numbers), [(1, numbers[0])]
+    while stack:
+        i, res0 = stack.pop()
+        n, i = numbers[i], i + 1
+        for op in ops:
+            res1 = op(res0, n)
+            if i == length:
+                if res1 == test:
+                    return True
+            elif res1 <= test:
+                stack.append((i, res1))
+    return False
 
 
 # --------------------------------------------------------------------------- #
@@ -51,8 +59,8 @@ print("Part 1: ", end="")
 
 
 def part_1(equations):
-    ops = add, mul
-    return sum(test for test, (n, *ns) in equations if solve(ops, test, ns, n))
+    check = partial(solve, (add, mul))
+    return sum(test for test, numbers in equations if check(test, numbers))
 
 
 print(solution := part_1(equations))
@@ -66,8 +74,8 @@ print("Part 2: ", end="")
 
 def part_2(equations):
     def concat(n, m): return int(f"{n}{m}")
-    ops = add, mul, concat
-    return sum(test for test, (n, *ns) in equations if solve(ops, test, ns, n))
+    check = partial(solve, (add, mul, concat))
+    return sum(test for test, numbers in equations if check(test, numbers))
 
 
 print(solution := part_2(equations))
