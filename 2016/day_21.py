@@ -22,10 +22,27 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 with open(file_name, "r") as file:
-    pass
+    instructions = []
+    for line in file:
+        cmd, *args = line.split()
+        match cmd:
+            case "swap" if args[0] == "position":
+                instruction = cmd, "position", int(args[1]), int(args[4])
+            case "swap":
+                instruction = cmd, "letter", args[1], args[4]
+            case "rotate" if args[-1] == "steps":
+                instruction = cmd, args[0], int(args[-2])
+            case "rotate":
+                instruction = cmd, "letter", args[-1]
+            case "reverse":
+                instruction = cmd, int(args[-3]), int(args[-1])
+            case "move":
+                instruction = cmd, int(args[-4]), int(args[-1])
+        instructions.append(instruction)
 if EXAMPLE:
-    #pprint()
-    pass
+    pprint(instructions)
+START = "abcde" if EXAMPLE else "abcdefgh"
+
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
@@ -44,7 +61,7 @@ def part_1():
 
 
 print(solution := part_1())
-#assert solution == (if EXAMPLE else)
+#assert solution == ("decab" if EXAMPLE else "")
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
