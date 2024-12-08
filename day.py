@@ -1,36 +1,37 @@
-from operator import add, mul
+from itertools import combinations
 
 
-print("Day 7")
+print("Day 8")
 EXAMPLE = False
 
-file_name = f"2024/input/day_07"
+file_name = "2024/input/day_08"
 if EXAMPLE:
     file_name += "_example"
 file_name += ".txt"
+antennas = {}
 with open(file_name, "r") as file:
-    equations = []
-    for line in file:
-        test, numbers = line.split(": ")
-        equations.append((int(test), tuple(map(int, numbers.split()))))
-equations = tuple(equations)
+    lines = [line.rstrip() for line in file]
+ROWS, COLS = len(lines), len(lines[0])
+for r, line in enumerate(lines):
+    for c, char in enumerate(line):
+        if char != ".":
+            antennas.setdefault(char, []).append((r, c))
 
-
-def solve(ops, test, numbers, res):        
-    n, *numbers = numbers
-    if len(numbers) == 0:
-        return any(op(res, n) == test for op in ops)
-    for op in ops:
-        if (res1 := op(res, n)) <= test and solve(ops, test, numbers, res1):
-            return True
-    return False
-
-
-ops = add, mul
-solution = sum(test for test, (n, *ns) in equations if solve(ops, test, ns, n))
+antinodes = set()
+for positions in antennas.values():
+    for (r1, c1), (r2, c2) in combinations(positions, 2):
+        for r, c in (2 * r1 - r2, 2 * c1 - c2), (2 * r2 - r1, 2 * c2 - c1):
+            if 0 <= r < ROWS and 0 <= c < COLS:
+                antinodes.add((r, c))
+solution = len(antinodes)
 print(f"Part 1: {solution}")
 
-def concat(n, m): return int(f"{n}{m}")
-ops = add, mul, concat
-solution = sum(test for test, (n, *ns) in equations if solve(ops, test, ns, n))
+antinodes = set()
+for positions in antennas.values():
+    for (r1, c1), (r2, c2) in combinations(positions, 2):
+        for r, c, dr, dc in (r1, c1, r1 - r2, c1 - c2), (r2, c2, r2 - r1, c2 - c1):
+            while 0 <= r < ROWS and 0 <= c < COLS:
+                antinodes.add((r, c))
+                r, c = r + dr, c + dc
+solution = len(antinodes)
 print(f"Part 2: {solution}")
