@@ -1,47 +1,36 @@
 # --------------------------------------------------------------------------- #
-#    Day 18                                                                   #
+#    Day 19                                                                   #
 # --------------------------------------------------------------------------- #
-DAY = 18
-EXAMPLE = False
+from pprint import pprint
+
+
+DAY = 19
+EXAMPLE = True
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
 # --------------------------------------------------------------------------- #
 print("Day", DAY)
 
+file_name = f"2016/input/day_{DAY:0>2}"
+if EXAMPLE:
+    file_name += "_example"
+file_name += ".txt"
+
 # --------------------------------------------------------------------------- #
 #    Reading input                                                            #
 # --------------------------------------------------------------------------- #
 
+with open(file_name, "r") as file:
+    pass
 if EXAMPLE:
-    START, ROWS = ".^^.^.^^^^", 10
-    print(f"Starting row:\n{START}")
-else:
-    with open("2016/input/day_18.txt", "r") as file:
-        START = file.read().rstrip()
-    ROWS = 40
-COLS = len(START)
+    #pprint()
+    pass
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
 # --------------------------------------------------------------------------- #
 
-TRAP = {"^^.", ".^^", "^..", "..^"}
-
-
-def step(row):
-    row = f".{row}."
-    return "".join(
-        "^" if row[i-1:i+2] in TRAP else "." for i in range(1, len(row) - 1)
-    )
-
-
-def solve(rows=ROWS):
-    safe, row = START.count("."), START
-    for _ in range(rows - 1):
-        row = step(row)
-        safe += row.count(".")
-    return safe
 
 
 # --------------------------------------------------------------------------- #
@@ -49,13 +38,23 @@ def solve(rows=ROWS):
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
 
-print(solution := solve())
-assert solution == (38 if EXAMPLE else 1961)
+
+def part_1():
+    return None
+
+
+print(solution := part_1())
+#assert solution == (if EXAMPLE else)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 2: ", end="")
 
-print(solution := solve(rows=400_000))
-assert solution == (1935478 if EXAMPLE else 20000795)
+
+def part_2():
+    return None
+
+
+print(solution := part_2())
+#assert solution == (if EXAMPLE else)
