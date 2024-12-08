@@ -17,7 +17,7 @@ print("Day", DAY)
 #    Reading input                                                            #
 # --------------------------------------------------------------------------- #
 
-ID = "abc" if EXAMPLE else "ugkcyxxp"
+BASE = md5(("abc" if EXAMPLE else "ugkcyxxp").encode())
 
 # --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
@@ -25,11 +25,11 @@ ID = "abc" if EXAMPLE else "ugkcyxxp"
 print("Part 1: ", end="")
 
 
-def part_1(ID):
+def part_1():
     i, pwd = 0, ""
     while True:
-        h = md5()
-        h.update(f"{ID}{i}".encode())
+        h = BASE.copy()
+        h.update(str(i).encode())
         string = h.hexdigest()
         if string.startswith("00000"):
             pwd += string[5]
@@ -38,7 +38,7 @@ def part_1(ID):
         i += 1
 
 
-print(solution := part_1(ID))
+print(solution := part_1())
 assert solution == ("18f47a30" if EXAMPLE else "d4cd2ee1")
 
 # --------------------------------------------------------------------------- #
@@ -47,11 +47,11 @@ assert solution == ("18f47a30" if EXAMPLE else "d4cd2ee1")
 print("Part 2: ", end="")
 
 
-def part_2(ID):
+def part_2():
     i, count, pwd = 0, 0, [""] * 8
     while True:
-        h = md5()
-        h.update(f"{ID}{i}".encode())
+        h = BASE.copy()
+        h.update(str(i).encode())
         string = h.hexdigest()
         if string.startswith("00000"):
             index = int(string[5], base=16)
@@ -63,5 +63,5 @@ def part_2(ID):
         i += 1
 
 
-print(solution := part_2(ID))
+print(solution := part_2())
 assert solution == ("05ace8e3" if EXAMPLE else "f2c730e5")
