@@ -1,49 +1,36 @@
 # --------------------------------------------------------------------------- #
-#    Day 14                                                                   #
+#    Day 15                                                                   #
 # --------------------------------------------------------------------------- #
-import re
-from hashlib import md5
 from pprint import pprint
 
 
-DAY = 14
-EXAMPLE = False
+DAY = 15
+EXAMPLE = True
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
 # --------------------------------------------------------------------------- #
 print("Day", DAY)
 
+file_name = f"2016/input/day_{DAY:0>2}"
+if EXAMPLE:
+    file_name += "_example"
+file_name += ".txt"
+
 # --------------------------------------------------------------------------- #
 #    Reading input                                                            #
 # --------------------------------------------------------------------------- #
 
-BASE = md5(("abc" if EXAMPLE else "yjdafjpo").encode())
+with open(file_name, "r") as file:
+    pass
+if EXAMPLE:
+    #pprint()
+    pass
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
 # --------------------------------------------------------------------------- #
 
-RE_TRIPLE = re.compile(r"(.)\1\1")
-
-
-def search():
-    n, count, hashes = 0, 0, {}
-    while True:
-        string = hashes[n] if n in hashes else hash_it(n)
-        if m := RE_TRIPLE.search(string):
-            fivelet = m[0][0] * 5
-            for m in range(n + 1, n + 1001):
-                string = hashes.get(m)
-                if string is None:
-                    string = hashes.setdefault(m, hash_it(m))
-                if fivelet in string:
-                    count += 1
-                    if count == 64:
-                        return n
-                    break
-        n += 1
-    return n    
 
 
 # --------------------------------------------------------------------------- #
@@ -52,29 +39,22 @@ def search():
 print("Part 1: ", end="")
 
 
-def hash_it(n):
-    h = BASE.copy()
-    h.update(str(n).encode())
-    return h.hexdigest()
+def part_1():
+    return None
 
 
-print(solution := search())
-assert solution == (22728 if EXAMPLE else 25427)
+print(solution := part_1())
+#assert solution == (if EXAMPLE else)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
 # --------------------------------------------------------------------------- #
-print("Part 2: ", end="", flush=True)
+print("Part 2: ", end="")
 
 
-def hash_it(n):
-    h = BASE.copy()
-    h.update(str(n).encode())
-    string = h.hexdigest()
-    for _ in range(2016):
-        string = md5(string.encode()).hexdigest()
-    return string
+def part_2():
+    return None
 
 
-print(solution := search())
-assert solution == (22551 if EXAMPLE else 22045)
+print(solution := part_2())
+#assert solution == (if EXAMPLE else)
