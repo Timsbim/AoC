@@ -1,48 +1,36 @@
 # --------------------------------------------------------------------------- #
-#    Day 16                                                                   #
+#    Day 17                                                                   #
 # --------------------------------------------------------------------------- #
 from pprint import pprint
 
 
-DAY = 16
-EXAMPLE = False
+DAY = 17
+EXAMPLE = True
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
 # --------------------------------------------------------------------------- #
 print("Day", DAY)
 
+file_name = f"2016/input/day_{DAY:0>2}"
+if EXAMPLE:
+    file_name += "_example"
+file_name += ".txt"
+
 # --------------------------------------------------------------------------- #
 #    Reading input                                                            #
 # --------------------------------------------------------------------------- #
 
-LENGTH, STATE = (20, "10000") if EXAMPLE else (272, "00111101111101000")
+with open(file_name, "r") as file:
+    pass
+if EXAMPLE:
+    #pprint()
+    pass
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
 # --------------------------------------------------------------------------- #
 
-
-def dragon(a):
-    b = "".join("1" if char == "0" else "0" for char in reversed(a))
-    return f"{a}0{b}"
-
-
-def checksum(data):
-    while True:
-        data = "".join(
-            "1" if data[i] == data[i+1] else "0"
-            for i in range(0, len(data), 2)
-        )
-        if len(data) % 2:
-            return data
-
-
-def solve(length=LENGTH):
-    data = STATE
-    while len(data) < length:
-        data = dragon(data)
-    return checksum(data[:length])
 
 
 # --------------------------------------------------------------------------- #
@@ -50,13 +38,23 @@ def solve(length=LENGTH):
 # --------------------------------------------------------------------------- #
 print("Part 1: ", end="")
 
-print(solution := solve())
-assert solution == ("01100" if EXAMPLE else "10011010010010010")
+
+def part_1():
+    return None
+
+
+print(solution := part_1())
+#assert solution == (if EXAMPLE else)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
 # --------------------------------------------------------------------------- #
 print("Part 2: ", end="")
 
-print(solution := solve(length=35651584))
-assert solution == ("10111110011110111" if EXAMPLE else "10101011110100011")
+
+def part_2():
+    return None
+
+
+print(solution := part_2())
+#assert solution == (if EXAMPLE else)
