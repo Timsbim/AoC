@@ -5,7 +5,7 @@ from pprint import pprint
 
 
 DAY = 20
-EXAMPLE = True
+EXAMPLE = False
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
@@ -22,16 +22,11 @@ file_name += ".txt"
 # --------------------------------------------------------------------------- #
 
 with open(file_name, "r") as file:
-    pass
+    intervals = tuple(
+        sorted(tuple(map(int, line.split("-"))) for line in file)
+    )
 if EXAMPLE:
-    #pprint()
-    pass
-
-# --------------------------------------------------------------------------- #
-#    Helper                                                                   #
-# --------------------------------------------------------------------------- #
-
-
+    pprint(intervals)
 
 # --------------------------------------------------------------------------- #
 #    Part 1                                                                   #
@@ -39,12 +34,16 @@ if EXAMPLE:
 print("Part 1: ", end="")
 
 
-def part_1():
-    return None
+def part_1(intervals):
+    right = intervals[0][1]
+    for a, b in intervals[1:]:
+        if right < a - 1:
+            return right + 1
+        right = max(right, b)
 
 
-print(solution := part_1())
-#assert solution == (if EXAMPLE else)
+print(solution := part_1(intervals))
+assert solution == (3 if EXAMPLE else 31053880)
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
@@ -52,9 +51,14 @@ print(solution := part_1())
 print("Part 2: ", end="")
 
 
-def part_2():
-    return None
+def part_2(intervals):
+    count, right = 0, intervals[0][1]
+    for a, b in intervals[1:]:
+        if right < a - 1:
+            count += a - right - 1
+        right = max(right, b)
+    return count
 
 
-print(solution := part_2())
-#assert solution == (if EXAMPLE else)
+print(solution := part_2(intervals))
+assert solution == (1 if EXAMPLE else 117)
