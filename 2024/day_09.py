@@ -54,8 +54,7 @@ def part_1(disk_map):
     for i, j in zip(free, reversed(occupied)):
         if j < i:
             break
-        files[i] = files[j]
-        files[j] = "."
+        files[i], files[j] = files[j], "."
     return checksum(files)
 
 
@@ -69,32 +68,29 @@ print("Part 2: ", end="")
 
 
 def part_2(disk_map):
-    ID, files, occupied, free = -1, [], [], {}
+    ID, files, occupied, free = -1, [], {}, {}
     for i, n in enumerate(disk_map):
         l, n, = len(files), int(n)
-        idxs = range(l, l + n)
-        if i % 2:
-            item, free[l] = ".", idxs
-        else:
-            item = (ID := ID + 1)
-            occupied.append((ID, idxs))
+        container, key, item = (
+            (free, l, ".") if i % 2 else (occupied, ID := ID + 1, ID)
+        )
+        container[key] = range(l, l + n)
         files.extend(item for _ in range(n))
-    while occupied:
-        ID, idxs = occupied.pop()
-        j, l, found = idxs.start, len(idxs), False
-        for i, idxs1 in free.items():
-            if j <= idxs1.start:
+    for ID, idxso in reversed(occupied.items()):
+        i, l, found = idxso.start, len(idxso), False
+        for j, idxsf in free.items():
+            if i <= idxsf.start:
                 break
-            if l <= len(idxs1):
+            if l <= len(idxsf):
                 found = True
                 break
         if found:
-            for k, l in zip(free[i], idxs):
+            for k, l in zip(idxsf, idxso):
                 files[k], files[l] = ID, "."
-            if len(idxs) < len(free[i]):
-                free[i] = range(free[i].start + len(idxs), free[i].stop)
+            if len(idxso) < len(idxsf):
+                free[j] = range(idxsf.start + len(idxso), idxsf.stop)
             else:
-                del free[i]
+                del free[j]
     return checksum(files)
 
 
