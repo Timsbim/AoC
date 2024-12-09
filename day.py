@@ -1,37 +1,60 @@
-from itertools import combinations
-
-
-print("Day 8")
+print("Day 9")
 EXAMPLE = False
 
-file_name = "2024/input/day_08"
 if EXAMPLE:
-    file_name += "_example"
-file_name += ".txt"
-antennas = {}
-with open(file_name, "r") as file:
-    lines = [line.rstrip() for line in file]
-ROWS, COLS = len(lines), len(lines[0])
-for r, line in enumerate(lines):
-    for c, char in enumerate(line):
-        if char != ".":
-            antennas.setdefault(char, []).append((r, c))
+    disk_map = "2333133121414131402"
+else:
+    with open("2024/input/day_09.txt", "r") as file:
+        disk_map = file.read().rstrip()
 
-antinodes = set()
-for positions in antennas.values():
-    for (r1, c1), (r2, c2) in combinations(positions, 2):
-        for r, c in (2 * r1 - r2, 2 * c1 - c2), (2 * r2 - r1, 2 * c2 - c1):
-            if 0 <= r < ROWS and 0 <= c < COLS:
-                antinodes.add((r, c))
-solution = len(antinodes)
+
+def checksum(disk):
+    s = 0
+    for i, n in enumerate(disk):
+        if n != ".":
+            s += i * n
+    return s
+
+
+ID, files, occupied, free = -1, [], [], []
+for i, n in enumerate(disk_map):
+    container, item = (free, ".") if i % 2 else (occupied, ID := ID + 1)
+    l, n, = len(files), int(n)
+    container.extend(range(l, l + n))
+    files.extend(item for _ in range(n))
+for i, j in zip(free, reversed(occupied)):
+    if j < i:
+        break
+    files[i] = files[j]
+    files[j] = "."
+solution = checksum(files)
 print(f"Part 1: {solution}")
 
-antinodes = set()
-for positions in antennas.values():
-    for (r1, c1), (r2, c2) in combinations(positions, 2):
-        for r, c, dr, dc in (r1, c1, r1 - r2, c1 - c2), (r2, c2, r2 - r1, c2 - c1):
-            while 0 <= r < ROWS and 0 <= c < COLS:
-                antinodes.add((r, c))
-                r, c = r + dr, c + dc
-solution = len(antinodes)
+ID, files, occupied, free = -1, [], [], {}
+for i, n in enumerate(disk_map):
+    l, n, = len(files), int(n)
+    idxs = range(l, l + n)
+    if i % 2:
+        item, free[l] = ".", idxs
+    else:
+        item = (ID := ID + 1)
+        occupied.append((ID, idxs))
+    files.extend(item for _ in range(n))
+while occupied:
+    ID, idxs = occupied.pop()
+    j, l, found = idxs.start, len(idxs), False
+    for i, idxs1 in free.items():
+        if j <= idxs1.start:
+            break
+        if l <= len(idxs1):
+            found = True
+            break
+    if found:
+        for k, l in zip(free[i], idxs):
+            files[k], files[l] = ID, "."
+        if len(idxs) < len(free[i]):
+            free[i] = range(free[i].start + len(idxs), free[i].stop)
+        else:
+            del free[i]
+solution = checksum(files)
 print(f"Part 2: {solution}")
