@@ -5,7 +5,7 @@ from pprint import pprint
 
 
 DAY = 21
-EXAMPLE = True
+EXAMPLE = False
 
 # --------------------------------------------------------------------------- #
 #    Preparation                                                              #
@@ -30,7 +30,7 @@ with open(file_name, "r") as file:
                 instruction = cmd, "position", int(args[1]), int(args[4])
             case "swap":
                 instruction = cmd, "letter", args[1], args[4]
-            case "rotate" if args[-1] == "steps":
+            case "rotate" if args[-1].startswith("step"):
                 instruction = cmd, args[0], int(args[-2])
             case "rotate":
                 instruction = cmd, "letter", args[-1]
@@ -41,8 +41,7 @@ with open(file_name, "r") as file:
         instructions.append(instruction)
 if EXAMPLE:
     pprint(instructions)
-START = "abcde" if EXAMPLE else "abcdefgh"
-
+START = list("abcde" if EXAMPLE else "abcdefgh")
 
 # --------------------------------------------------------------------------- #
 #    Helper                                                                   #
@@ -56,12 +55,48 @@ START = "abcde" if EXAMPLE else "abcdefgh"
 print("Part 1: ", end="")
 
 
-def part_1():
-    return None
+def step(state, cmd, args):
+    match cmd:
+        case "swap" if args[0] == "position":
+            i, j = args[1], args[2]
+            state[i], state[j] = state[j], state[i]
+        case "swap":
+            a, b = args[1], args[2]
+            i, j = state.index(args[1]), state.index(args[2])
+            state[i], state[j] = state[j], state[i]
+        case "rotate" if (d := args[0]) in ("left", "right"):
+            length, shift = len(state), -args[1] if d == "right" else args[1]
+            state = [
+                state[i] for i in ((i + shift) % length for i in range(length))
+            ]
+        case "rotate":
+            length, shift = len(state), state.index(args[1]) + 1
+            if shift >= 5:
+                shift += 1
+            state = [
+                state[i] for i in ((i - shift) % length for i in range(length))
+            ]            
+        case "reverse":
+            start, stop = args
+            rev = reversed(state[start:stop+1])
+            for i, c in enumerate(rev, start):
+                state[i] = c
+        case "move":
+            i, j = args
+            a, state = state[i], state[:i] + state[i+1:]
+            state = state[:j] + [a] + state[j:]
+    return state
 
 
-print(solution := part_1())
-#assert solution == ("decab" if EXAMPLE else "")
+def part_1(instructions):
+    state = START.copy()
+    for cmd, *args in instructions:
+        state = step(state, cmd, args)
+    return "".join(state)
+
+
+print(solution := part_1(instructions))
+assert solution == ("decab" if EXAMPLE else "gbhafcde")
 
 # --------------------------------------------------------------------------- #
 #    Part 2                                                                   #
