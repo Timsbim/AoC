@@ -1,60 +1,37 @@
-print("Day 9")
+print("Day 10")
 EXAMPLE = False
 
+file_name = "2024/input/day_10"
 if EXAMPLE:
-    disk_map = "2333133121414131402"
-else:
-    with open("2024/input/day_09.txt", "r") as file:
-        disk_map = file.read().rstrip()
+    file_name += "_example"
+file_name += ".txt"
+with open(file_name, "r") as file:
+    topos = tuple(tuple(map(int, line.rstrip())) for line in file)
+
+ROWS, COLS = len(topos), len(topos[0])
 
 
-def checksum(disk):
-    s = 0
-    for i, n in enumerate(disk):
-        if n != ".":
-            s += i * n
-    return s
+def moves(r, c):
+    for dr, dc in (0, 1), (1, 0), (0, -1), (-1, 0):
+        r1, c1 = r + dr, c + dc
+        if 0 <= r1 < ROWS and 0 <= c1 < COLS:
+            yield r1, c1
 
 
-ID, files, occupied, free = -1, [], [], []
-for i, n in enumerate(disk_map):
-    container, item = (free, ".") if i % 2 else (occupied, ID := ID + 1)
-    l, n, = len(files), int(n)
-    container.extend(range(l, l + n))
-    files.extend(item for _ in range(n))
-for i, j in zip(free, reversed(occupied)):
-    if j < i:
-        break
-    files[i] = files[j]
-    files[j] = "."
-solution = checksum(files)
-print(f"Part 1: {solution}")
+score = count = 0
+for r0, row in enumerate(topos):
+    for c0, n in enumerate(row):
+        if n: continue
+        heads = [(r0, c0)]
+        for n in range(1, 10):
+            heads_new = []
+            for r, c in heads:
+                for r1, c1 in moves(r, c):
+                    if topos[r1][c1] == n:
+                        heads_new.append((r1, c1))
+            heads = heads_new
+        score += len(set(heads))
+        count += len(heads)
 
-ID, files, occupied, free = -1, [], [], {}
-for i, n in enumerate(disk_map):
-    l, n, = len(files), int(n)
-    idxs = range(l, l + n)
-    if i % 2:
-        item, free[l] = ".", idxs
-    else:
-        item = (ID := ID + 1)
-        occupied.append((ID, idxs))
-    files.extend(item for _ in range(n))
-while occupied:
-    ID, idxs = occupied.pop()
-    j, l, found = idxs.start, len(idxs), False
-    for i, idxs1 in free.items():
-        if j <= idxs1.start:
-            break
-        if l <= len(idxs1):
-            found = True
-            break
-    if found:
-        for k, l in zip(free[i], idxs):
-            files[k], files[l] = ID, "."
-        if len(idxs) < len(free[i]):
-            free[i] = range(free[i].start + len(idxs), free[i].stop)
-        else:
-            del free[i]
-solution = checksum(files)
-print(f"Part 2: {solution}")
+print(f"Part 1: {score}")
+print(f"Part 2: {count}")
